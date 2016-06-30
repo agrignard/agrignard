@@ -4,27 +4,16 @@
 class ParticleSystem {
   ArrayList<Particle> particles;
   PVector origin;
-  String type;
+  color c;
 
-  ParticleSystem(PVector _location, String _type) {
+  ParticleSystem(PVector _location, color _c) {
     origin = _location;
     particles = new ArrayList<Particle>();
-    type = _type;
+    c = _c;
   }
 
   void addParticle() {
-    if(type.equals("red")){
-      particles.add(new ParticleRed(origin));
-    }
-    if(type.equals("green")){
-      particles.add(new ParticleGreen(origin));
-    }
-    if(type.equals("blue")){
-      particles.add(new ParticleBlue(origin)); 
-    }
-    if(type.equals("default")){
-      particles.add(new Particle(origin));
-    }
+      particles.add(new Particle(origin,c));
   }
   
   void applyForce(PVector force){

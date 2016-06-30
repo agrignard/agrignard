@@ -1,22 +1,26 @@
 class Block {
   PVector location;
   int size;
-  PVector gravity;
+  color c;
+  ParticleSystem ps;
 
-  Block(PVector l, int _size) {
+  Block(PVector l, int _size, color _c) {
     location = l.get();
     size = _size;
-    gravity = new PVector(0,0.05);
+    c = _c;
+    ps = new ParticleSystem(l,c);
+    systems.add(ps);
   }
   
   void run(){
+    ps.addParticle();
+    ps.run();
   }
 
-  // Method to display
   void display() {  
     if(isKeystoned){
       offscreen.rectMode(CENTER);  
-      offscreen.fill(100);  
+      offscreen.fill(c);  
       offscreen.rect(location.x, location.y, size, size);  
     }
     else{
@@ -25,6 +29,4 @@ class Block {
       rect(location.x, location.y, size, size);  
     }  
   }
-
 }
-

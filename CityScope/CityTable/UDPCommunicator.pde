@@ -3,10 +3,10 @@ import hypermedia.net.*;
 int PORT=9876; 
 String IP="localhost"; 
 UDP udp;
-String currentMessage;
+String currentMessage = "";
 
 public class UDPCommunicator{
-  void initUDP(String _IP, int _PORT){
+  UDPCommunicator(String _IP, int _PORT){
     IP = _IP;
     PORT= _PORT;
     udp= new UDP(this,PORT,IP);
@@ -28,5 +28,3 @@ public class UDPCommunicator{
       udp.send( message, IP, PORT );
   }
 }
-
-

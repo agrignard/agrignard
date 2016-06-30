@@ -18,19 +18,19 @@ class Grid {
   void addBlock(PVector _location, int _blockSize, int _id){
     if(!isBlockAlreadyCreated(_location)){ 
       if(_id == 0){
-        blocks.add(new BlockRed(_location, _blockSize));
+        blocks.add(new Block(_location, _blockSize, color(255,0,0)));
       }
       if(_id == 1){
-        blocks.add(new BlockGreen(_location, _blockSize));
+        blocks.add(new Block(_location, _blockSize, color(0,255,0)));
       }
       if(_id == 2){
-        blocks.add(new BlockBlue(_location, _blockSize));
+        blocks.add(new Block(_location, _blockSize, color(0,0,255)));
       }
       if(_id == 3){
-        blocks.add(new BlockYellow(_location, _blockSize));
+        blocks.add(new InteractorBlock(_location, _blockSize, -0.001));
       }
       if(_id == 4){
-        blocks.add(new BlockPurple(_location, _blockSize));
+        blocks.add(new InteractorBlock(_location, _blockSize, 0.001));
       }     
     } 
  }
@@ -47,8 +47,7 @@ class Grid {
     }
     return false;
  }
- 
- 
+
  
   void update(String message) {
     String[] lineSplit = split(message, "\n");   
