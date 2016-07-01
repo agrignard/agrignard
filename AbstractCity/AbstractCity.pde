@@ -1,0 +1,62 @@
+import deadpixel.keystone.*;
+
+public int displayWidth = 1000;
+public int displayHeight = 1000;
+public int playGroundWidth = 500;
+public int playGroundHeight = 500;
+
+
+String jsonInput = "cityIO";
+//String jsonInput = "Colortizer";
+
+JSONObject jsonColortizer;
+JSONArray jsonCityIOs;
+JSONObject jsonCityIO;
+
+
+PlayGround myPlayGround;
+Keystone ks;
+CornerPinSurface surface;
+PGraphics offscreen;
+
+void setup() {
+  size(displayWidth,displayWidth,P3D);
+  //fullScreen(P3D,2);
+  ks = new Keystone(this);
+  surface = ks.createCornerPinSurface(playGroundWidth,playGroundHeight,50); 
+  offscreen = createGraphics(displayWidth, displayHeight, P3D);
+  if(jsonInput.equals("Colortizer")){
+    jsonColortizer = loadJSONObject("data/Corlortizer.json");
+  }
+  if(jsonInput.equals("cityIO")){
+    jsonCityIOs = loadJSONArray("data/cityIO.json");
+    jsonCityIO = jsonCityIOs.getJSONObject(0);
+  }
+  
+  myPlayGround = new PlayGround(new PVector(playGroundWidth/2,playGroundWidth/2), playGroundWidth,playGroundWidth);
+}
+
+void draw() {
+  background(0);
+  offscreen.beginDraw();
+  offscreen.clear();
+  //offscreen.translate(displayWidth/4,displayHeight/4);
+  //offscreen.rotate(PI/20);
+  myPlayGround.display(offscreen);
+  fill(255);
+  offscreen.endDraw();
+  surface.render(offscreen);
+}
+
+
+void keyPressed() {
+  myPlayGround.keyPressed();
+}
+
+void mouseClicked() {
+  myPlayGround.mouseClicked();
+}
+
+public void mouseDragged() {
+  myPlayGround.mouseDragged();
+}
