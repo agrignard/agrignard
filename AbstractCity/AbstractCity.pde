@@ -2,8 +2,11 @@ import deadpixel.keystone.*;
 
 public int displayWidth = 1000;
 public int displayHeight = 1000;
-public int playGroundWidth = 500;
-public int playGroundHeight = 500;
+public int playGroundWidth = 1000;
+public int playGroundHeight = 1000;
+
+ArrayList<String> displayModes = new ArrayList();
+String currentDisplayMode = "CityMatrix";
 
 
 String jsonInput = "cityIO";
@@ -13,14 +16,21 @@ JSONObject jsonColortizer;
 JSONArray jsonCityIOs;
 JSONObject jsonCityIO;
 
+boolean isGridHasChanged = true;
+
 
 PlayGround myPlayGround;
 Keystone ks;
 CornerPinSurface surface;
 PGraphics offscreen;
+PGraphics onscreen;
+PGraphics curScreen;
 
 void setup() {
   size(displayWidth,displayWidth,P3D);
+  displayModes.add("CityMatrix");
+  displayModes.add("Id");
+  displayModes.add("Magnitude");
   //fullScreen(P3D,2);
   ks = new Keystone(this);
   surface = ks.createCornerPinSurface(playGroundWidth,playGroundHeight,50); 
@@ -37,6 +47,7 @@ void setup() {
 }
 
 void draw() {
+  
   background(0);
   offscreen.beginDraw();
   offscreen.clear();

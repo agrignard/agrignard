@@ -15,7 +15,11 @@ class PlayGround {
   }
   
   void display(PGraphics p){
-    updateGridJSON();
+    if(isGridHasChanged){
+      updateGridJSON();
+      isGridHasChanged = false;
+    }
+    
     p.fill(255);  
     p.textSize(10);
     p.text("PlayGround",location.x-width/2,location.y-height*0.52);
@@ -51,7 +55,7 @@ class PlayGround {
         int type = grid.getInt("type");
         int x = grid.getInt("x");
         int y = grid.getInt("y");
-        grids.get(0).addBlock(new PVector(x, y), 20, type);
+        grids.get(0).addBlock(new PVector(x, y), 20, type,0);
       }
     }
     if(jsonInput.equals("cityIO")){
@@ -63,7 +67,8 @@ class PlayGround {
         int type = grid.getInt("type");
         int x = grid.getInt("x");
         int y = grid.getInt("y");
-        grids.get(0).addBlock(new PVector(x, y), 20, type);
+        int magnitude = grid.getInt("magnitude");
+        grids.get(0).addBlock(new PVector(x, y), 20, type,magnitude);
       }
     }
 }
@@ -84,6 +89,17 @@ class PlayGround {
          break; 
         case 's':
          ks.save();
+        
+        /////////////////////DISPLAY MODE /////////////////
+        case '0':
+          currentDisplayMode = displayModes.get(0);
+          break;
+        case '1':
+          currentDisplayMode = displayModes.get(1);
+          break;
+        case '2':
+          currentDisplayMode = displayModes.get(2);
+          break;
         
         case CODED:
           switch(keyCode) {
@@ -107,7 +123,8 @@ class PlayGround {
  void copyright(PGraphics p){
   p.fill(0); 
   p.textAlign(CENTER,CENTER); textSize(20);
-  p.text("Abstract CityScope:" + jsonInput,playGroundWidth*0.15,playGroundHeight*0.95);
+  p.text("Abstract CityScope:" + jsonInput + "  " + currentDisplayMode ,playGroundWidth*0.15,playGroundHeight*0.95);
+  //p.text(" fps: " + frameRate);
   p.textAlign(CENTER,CENTER); textSize(10);
   //p.text("Arnaud Grignard - 2016 ",playGroundWidth*0.90,playGroundHeight*0.98);
 }
