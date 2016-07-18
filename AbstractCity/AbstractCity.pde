@@ -31,6 +31,7 @@ void setup() {
   displayModes.add("CityMatrix");
   displayModes.add("Id");
   displayModes.add("Magnitude");
+  displayModes.add("Abstract");
   //fullScreen(P3D,2);
   ks = new Keystone(this);
   surface = ks.createCornerPinSurface(playGroundWidth,playGroundHeight,50); 
@@ -43,7 +44,7 @@ void setup() {
     jsonCityIO = jsonCityIOs.getJSONObject(0);
   }
   
-  myPlayGround = new PlayGround(new PVector(playGroundWidth/2,playGroundWidth/2), playGroundWidth,playGroundWidth);
+  myPlayGround = new PlayGround(new PVector(playGroundWidth/2,playGroundHeight/2), playGroundWidth,playGroundWidth);
 }
 
 void draw() {
@@ -51,8 +52,6 @@ void draw() {
   background(0);
   offscreen.beginDraw();
   offscreen.clear();
-  //offscreen.translate(displayWidth/4,displayHeight/4);
-  //offscreen.rotate(PI/20);
   myPlayGround.display(offscreen);
   fill(255);
   offscreen.endDraw();

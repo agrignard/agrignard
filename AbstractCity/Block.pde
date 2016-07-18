@@ -70,6 +70,16 @@ class Block {
     if(currentDisplayMode.equals(displayModes.get(2))){
       p.fill(data*10);
       p.rect(location.x, location.y, size, size); 
-    }   
+    } 
+    if(currentDisplayMode.equals(displayModes.get(3))){
+      if(id==6){
+        p.fill(125);
+        p.rect(location.x, location.y, size, size); 
+      }
+      else{
+        p.fill(255);
+        p.rect(location.x, location.y, size, size);
+      }
+    }
   }
 }

@@ -100,6 +100,9 @@ class PlayGround {
         case '2':
           currentDisplayMode = displayModes.get(2);
           break;
+        case '3':
+          currentDisplayMode = displayModes.get(3);
+          break;
         
         case CODED:
           switch(keyCode) {

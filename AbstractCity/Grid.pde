@@ -28,16 +28,6 @@ class Grid {
       
   }
   
-    
-  /*void update(String file){
-    String[] lines = loadStrings(file);
-    for (int i=10 ; i<lines.length-1;i++) {
-      String[] colSplit1 = split(lines[i], "\t");
-      //println(colSplit1[1] + "," + colSplit1[2]);
-      addBlock(new PVector(Integer.parseInt(colSplit1[1]), Integer.parseInt(colSplit1[2])), blockSize, Integer.parseInt(colSplit1[0]));
-    }
-  }*/
-  
   void addBlock(PVector _location, int _blockSize, int _id, int _data){ 
     blocks.add(new Block(_location, _blockSize, _id, _data));     
   }
