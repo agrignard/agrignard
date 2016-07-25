@@ -1,4 +1,4 @@
-# CityIO_CityMAtrix_Reader
+# CityIO_CityMatrix_Reader
 
 Display the CityMatrix throught TCP/IP protocol.
 
