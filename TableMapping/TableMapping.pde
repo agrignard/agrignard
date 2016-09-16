@@ -1,16 +1,19 @@
 import deadpixel.keystone.*;
 import processing.video.*;
+import java.io.File;
 
 
 public int displayWidth = 2000;
 public int displayHeight = 1000;
-public int playGroundWidth = displayWidth;
-public int playGroundHeight = displayHeight;
 
 Keystone ks;
 CornerPinSurface surface;
-
 PGraphics offscreen;
+
+File folder;
+String [] filenames;
+String dataFolder = "Marakkech";
+
 PImage bg;
 Movie myMovie;
 ArrayList<String> files;
@@ -18,40 +21,36 @@ int curFile;
 boolean isCurFileMovie = false;
 
 float startTime, currTime;
-float hitTime;
+float hitTime = 10000;
 boolean isPaused = false;
 
 
 void setup() {
-  //size(displayWidth, displayHeight, P3D);
-  fullScreen(P2D,1);
+  size(displayWidth, displayHeight, P3D);
+  //fullScreen(P2D,1);
   ks = new Keystone(this);
-  surface = ks.createCornerPinSurface(playGroundWidth,playGroundHeight, 50);
-  offscreen = createGraphics(playGroundWidth,playGroundHeight, P2D);
+  surface = ks.createCornerPinSurface(displayWidth,displayHeight, 50);
+  offscreen = createGraphics(displayWidth,displayHeight, P2D);
+  folder = new java.io.File(dataPath(dataFolder));
   files = new ArrayList();
-  //files.add("Andorratable/Andorratable.001.png");
-  files.add("Marakkech/1.png");
-  files.add("Marakkech/2.png");
-  files.add("Marakkech/3.png");
-  files.add("Marakkech/4.png");
-  files.add("Marakkech/5.png");
-  files.add("Marakkech/6.png");
-  
-  ///files.add("movie/AndorraABM.mov");
+  for(int i = 0; i < folder.list().length; i++)
+  {
+    if(folder.list()[i].endsWith(".jpg") || folder.list()[i].endsWith(".jpeg") || folder.list()[i].endsWith(".png") )  {
+       files.add(dataFolder + "/"+ folder.list()[i]);
+    }
+  }
   curFile = 0;
   loadcurFile(files.get(curFile));
-  hitTime = 10000; 
   startTime = millis();
 }
 
 void draw() {
-  // Draw the scene, offscreen
   offscreen.beginDraw();
   offscreen.clear();
   if(isCurFileMovie){
-    offscreen.image(myMovie,0,0,playGroundWidth,playGroundHeight);
+    offscreen.image(myMovie,0,0,displayWidth,displayHeight);
   }else{
-    offscreen.image(bg,0,0,playGroundWidth,playGroundHeight);
+    offscreen.image(bg,0,0,displayWidth,displayHeight);
   } 
   offscreen.endDraw();
   background(0);
@@ -76,13 +75,9 @@ void loadcurFile(String fileName){
    if(fileName.endsWith(".mov")){
      myMovie = new Movie(this, files.get(curFile));
      myMovie.loop();
-     isCurFileMovie = true;
+       isCurFileMovie = true;
    }
 }
-// Called every time a new frame is available to read
-/*void movieEvent(Movie m) {
-  m.read();
-}*/
 
 void keyPressed() {
   switch(key) {
