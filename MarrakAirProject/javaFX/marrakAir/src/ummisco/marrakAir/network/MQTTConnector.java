@@ -3,6 +3,7 @@ package ummisco.marrakAir.network;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -12,9 +13,14 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.geotools.coverage.grid.io.footprint.FootprintBehavior;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.AbstractDriver;
+import com.thoughtworks.xstream.io.binary.BinaryStreamDriver;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+
+import ummisco.marrakAir.runtime.FollowedVariable;
 
 
 
@@ -32,12 +38,12 @@ public final class MQTTConnector {
 	public static String DEFAULT_PORT =  "1883";
 	
 	protected MqttClient sendConnection = null;
-	Map<String, Object> receivedData ;
+	Map<String, ArrayList<FollowedVariable>> receivedData ;
 	
 	public MQTTConnector(String server,  String userName, String password) throws MqttException
 	{	
 		this.connectToServer(server, null, userName, password);
-		receivedData = new HashMap<String, Object>();
+		receivedData = new HashMap<String, ArrayList<FollowedVariable>>();
 	}
 	
 	class Callback implements MqttCallback
@@ -58,30 +64,34 @@ public final class MQTTConnector {
 		}
 	}
 	
-	public Object  getLastData(String topic)
+/*	public List<Map<String,Object>>  getLastData(String topic)
 	{
-		Object  data = storeDataS(topic,null);
-		return data;
+		//Object  data = storeDataS(topic,null);
+		FollowedVariable tmp=this.receivedData.get(topic);
+		if(tmp==null)
+			return null;
+		return tmp.popLastData();
 	}
-	
-	private synchronized Object storeDataS(String topic, Object dts)
-	{
-		if(dts == null) {
-			Object tmp = this.receivedData.get(topic);
-			this.receivedData.remove(topic);
-			return tmp;
-			
-		}
-		this.receivedData.remove(topic);
-		this.receivedData.put(topic, dts);
-		return dts;
-	}
+*/	
 	
 	private final void storeData(String topic, String message)
 	{
-		XStream dataStreamer = new XStream(new DomDriver());
-		Object data = (Object)dataStreamer.fromXML(message);
-		storeDataS(topic, data);
+		//AbstractDriver
+		System.out.println("message received "+ topic);
+		XStream dataStreamer = new XStream(new DomDriver() );// DomDriver());
+		@SuppressWarnings("unchecked")
+		Map<String, Object> data = (Map<String, Object>)dataStreamer.fromXML(message);
+		ArrayList<FollowedVariable> dts=this.receivedData.get(topic);
+		System.out.println("message received "+ topic+" "+data);
+		
+		if(dts==null)
+			{
+				//dts = new FollowedVariable(topic);
+				//this.receivedData.put(topic,dts);
+				return;
+			}
+		for(FollowedVariable dt:dts)
+			dt.pushNewData(data);
 	}
 
 	public final void releaseConnection() throws MqttException{
@@ -89,6 +99,23 @@ public final class MQTTConnector {
 			sendConnection = null;
 	}
 
+	public void registerVariable(FollowedVariable var)
+	{
+		ArrayList<FollowedVariable> observers = this.receivedData.get(var.getName());
+		if(observers ==null)
+		{
+			observers = new ArrayList<FollowedVariable>();
+			this.receivedData.put(var.getName(), observers);
+		}
+		observers.add(var);
+		try {
+			subscribeToGroup(var.getName());
+		} catch (MqttException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public final void sendMessage(String dest, Object data ) throws MqttException
 	{
 		XStream dataStreamer = new XStream(new DomDriver());

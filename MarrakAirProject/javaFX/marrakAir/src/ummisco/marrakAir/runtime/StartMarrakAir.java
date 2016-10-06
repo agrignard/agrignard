@@ -19,11 +19,10 @@ public class StartMarrakAir extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-            // Load root layout from fxml file.
-			 rootLayout = (VBox)FXMLLoader.load(getClass().getResource("application.fxml"));
-			 GuiController.setRootPane(rootLayout);
 			 MQTTConnector connection = new MQTTConnector("localhost", null, null);
 			 GuiController.setConnection(connection);
+			 rootLayout = (VBox)FXMLLoader.load(getClass().getResource("application.fxml"));
+			 GuiController.setRootPane(rootLayout);
 			//rootLayout.getChildren().get(1);
 			 SplitPane n = (SplitPane) rootLayout.getChildren().get(1);
 			 ScrollPane sp = (ScrollPane) n.getItems().get(1);

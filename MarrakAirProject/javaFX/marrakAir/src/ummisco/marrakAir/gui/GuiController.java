@@ -5,13 +5,19 @@ import java.util.ResourceBundle;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import ummisco.marrakAir.gui.widget.LineChartBox;
+import ummisco.marrakAir.gui.widget.PieChartBox;
 import ummisco.marrakAir.gui.widget.ValueChangedEvent;
 import ummisco.marrakAir.network.MQTTConnector;
 
@@ -19,9 +25,20 @@ public class GuiController implements Initializable {
 	MapCanvas canvas = null;
 	private static MQTTConnector connection = null;
 	private static VBox rootLayout;
+	
+	@FXML private LineChartBox<Double,Double>	graphData;
+	@FXML private PieChartBox	pieGraphData;
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		// TODO Auto-generated method stub
+		initialize()	;
+	}
+		
+	@FXML
+	protected void initialize()	
+	{
+	        this.graphData.registerConnection(connection);
+	        this.pieGraphData.registerConnection(connection);
 
 
 	}
@@ -52,7 +69,6 @@ public class GuiController implements Initializable {
 	}
 	
 	
-	
 	@FXML
 	private void sliderValueChanged(MouseEvent evt)
 	{
@@ -65,6 +81,7 @@ public class GuiController implements Initializable {
 	public static void setConnection(MQTTConnector b)
 	{
 		connection=b;
+		//graphData.registerConnection(connection);
 	}
 	
 }

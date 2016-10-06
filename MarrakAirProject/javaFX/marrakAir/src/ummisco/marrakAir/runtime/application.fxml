@@ -93,15 +93,11 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <LineChart>
-                          <xAxis>
-                            <CategoryAxis side="BOTTOM" />
-                          </xAxis>
-                          <yAxis>
-                            <NumberAxis side="LEFT" />
-                          </yAxis>
-                        </LineChart>
-                        <PieChart title="polluant" GridPane.rowIndex="1" />
+                        <LineChartBox fx:id="graphData" follow="speed" plots="toto::titi,titi::toto">
+                            <xAxis><NumberAxis label="Values for X-Axis" lowerBound="0" upperBound="3" tickUnit="1"/></xAxis>
+        					<yAxis><NumberAxis label="Values for Y-Axis" lowerBound="0" upperBound="3" tickUnit="1"/></yAxis>
+    					</LineChartBox>
+                        <PieChartBox fx:id="pieGraphData" title="polluant" GridPane.rowIndex="1" follow="speed" specifyDraw="toto::gasoline::20,titi::essence::80"  />
                         <StackedBarChart GridPane.rowIndex="2">
                           <xAxis>
                             <CategoryAxis side="BOTTOM" />
