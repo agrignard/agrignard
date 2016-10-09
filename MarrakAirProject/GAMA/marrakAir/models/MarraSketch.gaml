@@ -82,7 +82,7 @@ species people skills: [moving] {
 experiment GIS_agentification type: gui {
 	output {
 		display city_display type:opengl{
-			image '../includes/SIG_simu/background.png' refresh: false;
+		//	image '../includes/SIG_simu/background.png' refresh: false;
 			species building aspect:base;
 			species road aspect:base;
 			species people aspect:base;
