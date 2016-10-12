@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.gluonhq.charm.glisten.mvc.View?>
+<?import javafx.scene.chart.AreaChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import ummisco.marrakAir.gui.widgets.SliderBox?>
+
+<View fx:id="game"  xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ummisco.marrakAir.runtime.views.GamePresenter">
+   <center>
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="768" prefHeight="1024" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox  prefWidth="768" prefHeight="200.0">
+         <children>
+            <PieChart prefHeight="150"/>
+            <PieChart prefHeight="150"/>
+            <PieChart prefHeight="150"/>
+         </children>
+      </HBox>
+      <HBox  prefWidth="768">
+         <children>
+            <AreaChart>
+              <xAxis>
+                <CategoryAxis side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+            </AreaChart>
+            <AreaChart>
+              <xAxis>
+                <CategoryAxis side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+            </AreaChart>
+         </children>
+      </HBox>
+      <Separator />
+      <HBox >
+         <children>
+            <SliderBox  vertical="true" prefHeight="250" />
+            <SliderBox vertical="true" prefHeight="250" />
+            <SliderBox vertical="true" prefHeight="250" />
+         </children>
+      </HBox>
+   </children>
+</VBox>
+</center>
+</View>
