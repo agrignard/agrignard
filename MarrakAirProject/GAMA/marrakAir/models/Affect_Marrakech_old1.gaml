@@ -17,13 +17,13 @@ model affectation
 global
 {
 	// Pas-de-temps à modifier en fonction de la taille du réseau
-	float stepDuration <- 5#s; //#mn ; 	
+	float stepDuration <- 1#mn ; 	
 	
 	// Une periode de 15 minutes entre chaque mesure
 	float capturePeriod <- 15#mn ; 	
 	
-	// choisir en fonction du reseau "speed" # "hierarchy" # "random"
-	string carBehaviorChoice <- "hierarchy"; 
+	// choisir en fonction du reseau "speed" # "random" # "random"
+	string carBehaviorChoice <- "random"; 
 	
 	//Génération du DeathTime (fonction aléatoire au sein d'une gaussienne de DeatTime--30 / Ecart-- 5)
 	float gdeathDay <- 30#mn;
@@ -60,9 +60,9 @@ global
 	
 	//Matrices de COPERT
 	map<string,map<float,list<list<float>>>> copert;
-	float energy <- 0.5;
+	int energy <- 1;
 	string vehicle_year <- "2007" ;
-	list<building> alived_building;
+
 //************************************************************************************************************************************************************
 //************************************************************************************************************************************************************
 //************************************************************************************************************************************************************	
@@ -75,12 +75,13 @@ global
 	int nbCar_created <- 0;
 	
 	int nbCycleInPeriod <- int(capturePeriod / stepDuration);
-	float maxNox <- 2500; //1.0 update: max(pollutant_grid collect(each.pollutant[world.pollutentIndex("nox")]));
-	float maxNox_buildings <- 10000 ;   //1.0 update: 10000; //max(building collect(each.pollutant[world.pollutentIndex("nox")]));
-	float diffusion_rate <- 0.05;
+	//int maxParc <- 0 update: max(parcArea collect(each.nb_death))+1 ;
+	float maxNox <- 1.0 update: max(pollutant_grid collect(each.pollutant[world.pollutentIndex("nox")]));
+		
 	
 	map<float,list<list<float>>> readCopertData(string fileName)
 	{
+	//	maxParc <- max(parcArea collect(each.nb_death))+1;
 		map<float,list<list<float>>> res <-[];
 		matrix<float> copert <- matrix<float>(csv_file( fileName, ';'));
 	
@@ -120,35 +121,8 @@ global
 		return idx; //  (1 + idx *2 + (energy = "essence" ? 0:1));
 	}
 	
-	int select_speed_hierarchy(float speed)
-	{
-		int res <- 0;
-		if(speed <=25 )
-		{
-			res <- 5;
-		}
-		else if(speed <=50 )
-		{
-			res <- 4;
-		}
-		else if(speed <=90 )
-		{
-			res <- 3;
-		}
-		else if(speed <=110 )
-		{
-			res <- 2;
-		}
-		else if(speed <=130 )
-		{
-			res <- 1;
-		}
-		return res;
-	}
-	
 	init
 	{
-		time <- 8#h;
 		copert <-[];
 		//Choix du parc automobile en fonction du parametres véhicle_year
 		if (vehicle_year = "2007")
@@ -160,6 +134,7 @@ global
 			copert <- copert + ("2020"::readCopertData( '../includes/CopertData2020.csv'));
 		}
 		
+		create pollutant_grid from:cell_shape;
 		create crossroad from:node_shape;
 		write "Map is loading..."; 
 		
@@ -174,10 +149,6 @@ global
 				height<-100 +rnd(10) ;
 			}
 		}
-		create pollutant_grid from:cell_shape{
-			neighboor_buildings <- building at_distance 70#m;
-			alived_building <- alived_building accumulate(neighboor_buildings); 
-		}
 		
 		
 		// Génération du réseau routier Attention aux attributs caractérisant la hiérarchie du réseau routier en code (Vitesse # Hiérarchie) + Vitesse réglementaire
@@ -189,7 +160,6 @@ global
 			tcrossroad <- crossroad closest_to(end);
 			containCarCounter_digit <- false;
 			containCarCounter_ndigit <- false;
-			speed_hierarchy <- world.select_speed_hierarchy(mspeed);
 		} //initroad
 		
 		// Génération des Postes de comptage DIGIT correspond au sens de comptage des PM et du sens de digitalisation du réseau routier
@@ -207,7 +177,7 @@ global
 				nbCar_digit <- 0;
 				associatedRoad.containCarCounter_ndigit <- true;
 			}
-		} //initcarCounter 
+		} //initcarCounter
 		 
 		write "Traffic rule assigment...";
 		int nbRoad <- length(road);
@@ -223,18 +193,26 @@ global
 			fnextRoad <- road where (((each.fcrossroad = self.fcrossroad and !each.containCarCounter_digit and (each.oneway !="TF")) or (each.tcrossroad = self.fcrossroad  and !each.containCarCounter_ndigit) and (each.oneway !="FT") ) and each !=self);
 			FOSM <- computeOSM(fnextRoad);
 			FSPEED <- computeSPEED(fnextRoad);
-			//speed_hierarchy <- TSPEED;
+			
 			counterm <- counterm + 1 ;
 			if(int((counterm / nbRoad) * 100) != lastUpdate )
 			{
 				lastUpdate <- int((counterm / nbRoad) * 100) ;
-				write " "+ lastUpdate + "% " +TSPEED ;
+				write " "+ lastUpdate + "%";
 			}
 		}//askroad
 		
 		step <- stepDuration;
 		
+		ask carCounter
+		{
+			write "myID "+ mid ;
+		}
 		
+		ask road
+		{
+			write "ID "+ mid + " myHierarchy >" + hierarchy + " // mySpeed >"+ speed_hierarchy;
+		}
 		
 		write "Traffic counter data loading..."; 
 		
@@ -253,9 +231,6 @@ global
 		// Route pour le RoadToDisplay ID à modifier pour un suivi ciblé	 ici Bld Mohamed Abdelkaraim el Khattabi
 		roadToDisplay <-(road first_with(each.mid = 305882936 ));	
 		//write copert;
-		
-		
-		
 	} //init
 	
 	reflex suivi 
@@ -272,11 +247,16 @@ global
 
 species pollutant_grid 
 	{
-		list<float> pollutant <- list_with(6,0.0);
-		list<building> neighboor_buildings;
+		list<float> pollutant <- list_with(6,0);
+	
+		reflex defineColor
+		{
+			//write "couqdflknsdfls " + maxNox + "  " +int((1-pollutant[world.pollutentIndex("nox")]/maxNox)*255)+"   "+ pollutant;
+		}
+	
 		aspect nox_aspect
 		{
-			draw shape color:rgb(0,255-int((1-pollutant[world.pollutentIndex("nox")]/maxNox)*255),0) ;
+			draw shape color:rgb(int((1-pollutant[world.pollutentIndex("nox")]/maxNox)*255),255,255) ;
 		}
 	}
 
@@ -294,10 +274,10 @@ species road schedules: ( time mod capturePeriod ) = 0 and time != 0.0 ? road :[
 	int capacity <- 0;
 	int long <- 0;
 	int pcapacity <- 0;
-	int speed_hierarchy <-0;
-	int hierarchy <- 0;
+	float speed_hierarchy <-0;
+	float hierarchy <- 0;
 	string oneway <- "";
-	float mspeed <- 0.0;
+	float mspeed <- 0;
 	float distance <-  shape.perimeter;
 	
 	list<float> pollutant <- list<float>(list_with(6,0));
@@ -378,7 +358,7 @@ species road schedules: ( time mod capturePeriod ) = 0 and time != 0.0 ? road :[
 	
 	aspect base
 	{
-		draw 5#m around shape color:#white ;
+		draw shape color:#black ;
 	}
 	aspect base3D
 	{	
@@ -490,8 +470,6 @@ species carCounter schedules: ( time mod 1#mn ) = 0 ? carCounter: []
 	{
 		loop while: nbCarToCreate >= 1
 		{
-			int is_gasoline <- flip(energy)?1:0;
-
 		 	if(carBehaviorChoice = "hierarchy")
 		 	{
 		 		create carHierarchyChange number:1
@@ -503,9 +481,7 @@ species carCounter schedules: ( time mod 1#mn ) = 0 ? carCounter: []
 					currentRoad <- myself.associatedRoad;
 					deathDay <- time + gauss({gdeathDay,ecart}); // fonction Gaussienne de disparition
 					mspeed <- myself.associatedRoad.mspeed;
-					currentRoad <- location;	
-					my_energy <- is_gasoline;
-								
+					currentRoad <- location;					
 				}
 				create carHierarchyChange number:1
 				{
@@ -516,13 +492,38 @@ species carCounter schedules: ( time mod 1#mn ) = 0 ? carCounter: []
 					currentRoad <- myself.associatedRoad;
 					deathDay <- time + gauss({gdeathDay,ecart});
 					mspeed <- myself.associatedRoad.mspeed;
-					currentRoad <- location;			
-					my_energy <- is_gasoline;
-					
+					currentRoad <- location;					
 				}
 		 	}//CarHierarchy
 		 	else 
 		 	{
+		 		if(carBehaviorChoice = "speed")
+		 		{
+		 			create carSpeedChange number:1
+					{
+						location <- myself.location;
+						myDestination <- destination;
+						isGhost <- false;
+						mycolor <- rgb('blue');
+						deathDay <- time + gauss({gdeathDay,ecart});
+						currentRoad <- myself.associatedRoad;
+						mspeed <- myself.associatedRoad.mspeed;
+						currentRoad <- location;
+					}
+					create carSpeedChange number:1
+					{
+						location <- myself.location;
+						myDestination <- ghostDestination;
+						isGhost <- true;
+						mycolor <- rgb('red');
+						deathDay <- time + gauss({gdeathDay,ecart});
+						currentRoad <- myself.associatedRoad;
+						mspeed <- myself.associatedRoad.mspeed;
+						currentRoad <- location;					
+					}
+		 		}//CarSpeed
+			 	else
+			 	{
 			 		create carRandomChange number:1
 					{
 						location <- myself.location;
@@ -532,9 +533,6 @@ species carCounter schedules: ( time mod 1#mn ) = 0 ? carCounter: []
 						deathDay <- time + gauss({gdeathDay,ecart});
 						currentRoad <- myself.associatedRoad;				
 						mspeed <- myself.associatedRoad.mspeed;
-						my_energy <- is_gasoline;
-								
-					
 					}
 					create carRandomChange number:1
 					{
@@ -545,8 +543,8 @@ species carCounter schedules: ( time mod 1#mn ) = 0 ? carCounter: []
 						deathDay <- time + gauss({gdeathDay,ecart});
 						currentRoad <- myself.associatedRoad;
 						mspeed <- myself.associatedRoad.mspeed;					
-						my_energy <- is_gasoline;
 					}
+		 		}//CarRandom
 		 	}
 			nbCar_created <- nbCar_created + 1;
 			nbCarToCreate <- nbCarToCreate - 1;
@@ -582,10 +580,92 @@ species carRandomChange parent:car
 	{
 		if( ! isGhost )
 		{
-			draw circle(5) color:colorCar();
+			draw circle(5) color:#blue;
 		}
 	}
-}
+}//carRandomChange
+
+species carSpeedChange parent:car  
+{		
+	action changeDestination 
+	{
+		list<list<road>> selectedRoads <- self.getClassifiedNextRoadSList();
+		
+		if(empty(self.getNextRoadList()))
+		{
+			do die;
+		}	
+
+		road selectedOneRoad <- nil;
+		
+		loop while:selectedOneRoad = nil
+		{
+			selectedOneRoad <- chooseARoad(selectedRoads);
+		}
+		
+		myDestination <- selectNextcrossroad(selectedOneRoad,self.location);
+		selectedOneRoad.traffic <- selectedOneRoad.traffic + 1;
+		currentRoad <- selectedOneRoad;
+	}//changeDestination
+	
+	road chooseARoad(list<list<road>> SPEEDs)
+	  {
+		road res <- nil;
+		list<float> speedChoice <- [] ;
+		float myplaces <- self.currentRoad.speed_hierarchy;
+		speedChoice <- SpeedMatrix row_at (int(myplaces) - 1);
+		float myrnds <- rnd(1000)/1000;
+		int choice_ids<- -1;
+		float rndCumulatorS<-0;
+		int tempids <- 0;
+		float cumulatorNormS <- 0.0;
+		
+		loop while:tempids < length(SPEEDs) 
+		{
+			if( (SPEEDs at tempids) != nil )
+			{
+				cumulatorNormS <- cumulatorNormS + (speedChoice at tempids);
+			}
+		tempids <- tempids + 1;
+		}
+
+		loop while:choice_ids < 0   or (myrnds > rndCumulatorS and choice_ids < length(speedChoice))
+		{
+			choice_ids <- choice_ids + 1;
+			
+			if(SPEEDs at choice_ids !=nil)
+			{
+				rndCumulatorS <- rndCumulatorS + (speedChoice at choice_ids)/cumulatorNormS;	
+			}
+		}
+		
+		list<road> chosenSPEED <- SPEEDs at choice_ids;
+		
+		if(empty(chosenSPEED))
+		{
+			return nil;
+		}
+		else
+		{
+			return one_of(chosenSPEED);
+		}
+	}//chooseAroad
+	
+	aspect base
+	{
+		if( ! isGhost )
+		{
+			draw circle(5) color:#red;
+		}
+	}
+	aspect ghost
+	{
+		if( isGhost )
+		{
+			draw circle(5) color:#gray;
+		}	
+	}
+}//CarSpeedChange
 
 species carHierarchyChange parent:car  
 {
@@ -652,13 +732,13 @@ species carHierarchyChange parent:car
 		{
 			return one_of(chosenOSM);
 		}
-	}
+	}//chooseAroad
 	
 	aspect base
 	{
 		if( ! isGhost )
 		{
-			draw circle(5) color:colorCar(); //#green;
+			draw circle(5) color:#green;
 		}
 	}
 	aspect ghost
@@ -670,7 +750,7 @@ species carHierarchyChange parent:car
 	}	
 }
 
-species car skills: [driving]
+species car skills: [moving]
 {
 	crossroad myDestination;
 	road previousRoad;
@@ -683,19 +763,14 @@ species car skills: [driving]
 	float nextCrossRoadDate <- 0;
 	action changeDestination ;
 	float endStreetArrival;
-	int my_energy <- 1;
-	rgb colorCar
-	{
-		write my_energy;
-		return my_energy=1?#green:#red;
-	}
 	
-	
-		
 	reflex cloud
 	{
 		float spp <- int(mspeed*#h / #km /10) *10;
-		list<float> mcopert <- ((world.copert at vehicle_year ) at spp)[my_energy];
+		//write world.copert at vehicle_year;
+		list<float> mcopert <- ((world.copert at vehicle_year ) at spp)[energy];
+		//write mcopert;
+		
 		float distance_done <- spp / step;
 		list<float> cloud <- mcopert collect(each * distance_done);
 		ask currentRoad
@@ -711,21 +786,12 @@ species car skills: [driving]
 		}
 
 		pollutant_grid  cells <- pollutant_grid first_with(each overlaps self);
-		
 		if(cells != nil)
 		{
 			loop i from:0 to:length(cloud) - 1// <<+ cloud;
 			{
 				cells.pollutant[i] <- cells.pollutant[i] + cloud[i];
-					
-			}
-			
-			loop j over:cells.neighboor_buildings
-			{
-				 ask j 
-				 {
-				 	do add_pollutant(cloud);
-				 }	
+				
 			}
 			
 		}
@@ -733,12 +799,17 @@ species car skills: [driving]
 	
 	reflex killcar when: deathDay < time
 	{
+/*		ask parcArea overlapping self
+		{
+			nb_death <- nb_death + 1;
+		}
+		
+		 */
 		do die;
 	}
 			
 	reflex gotocrossroad when: myDestination != nil and myDestination.location != self.location 
 	{
-		//write "spped +" + mspeed+ " "+myDestination.location + " "+ location ;
 		road_path <- self goto [on:: currentRoad ,target::myDestination.location, speed:: mspeed, return_path::true ] ;  //* !!!!stepDuration; speed:: 0.5 !!!VITESSE A 50km/h
 		previousRoad <- currentRoad;
 	}
@@ -793,30 +864,19 @@ species car skills: [driving]
 	}
 }//speciescar
 
+/*grid parcArea width:100 height:100 //création du'n grille de 10*10 pour compter le nombre d'individus infecté par zone
+{
+	int nb_death <- 0;
+	rgb color update: rgb(255,255-int(nb_death/maxParc * 255),255-int(nb_death/maxParc * 255));
+}//grid
+*/
 
-
-species building schedules: alived_building {
-	list<float> pollutant <- list_with(6,0.0);
+species building {
 	string type;
 	rgb color <- rgb(220,220,220);
 	int height;
-	
-	action add_pollutant(list<float> cloud)
-	{
-		loop i from:0 to:length(cloud) - 1
-		{
-			pollutant[i] <- pollutant[i] + cloud[i];				
-		}
-	}	
-	
-	reflex diffuse_pollutant {
-		loop i from:0 to:length(pollutant) - 1 {
-				pollutant[i] <- pollutant[i] * (1 - diffusion_rate);	
-			}
-	}
-	
 	aspect base {
-		draw shape color: rgb(255,int((1-pollutant[world.pollutentIndex("nox")]/maxNox_buildings)*255),255) depth: height;
+		draw shape color: color depth: height;
 	}
 }
 
@@ -836,16 +896,17 @@ experiment affect type:gui
 	
 	output {
 
-		display Suivi_Vehicules  type:opengl background:#black //refresh_every:15
+		display Suivi_Vehicules  type:opengl refresh_every:15
 		{
 			//grid parcArea;
-			species building aspect:base; // transparency:0.5;
-		//	species pollutant_grid aspect:nox_aspect ;
+			species pollutant_grid aspect:nox_aspect transparency:0.5;
+			species building aspect:base;
 			species road aspect:base;
 			species carCounter aspect:base;
 			//species crossroad aspect:base;
 			species car  aspect:ghost;
 			species carHierarchyChange  aspect:base;
+			species carSpeedChange aspect:base;
 			species carRandomChange aspect:base;
 			
 		}
