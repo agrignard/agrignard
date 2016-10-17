@@ -90,7 +90,7 @@ global
 		{
 			list<float> line <- cols at i;
 			float speed <- line[0];
-			remove index:0 from: line;
+			remove index:0 from: line; //tyu
 			
 			list<float> essence <-[];
 			list<float> diesel <-[];
