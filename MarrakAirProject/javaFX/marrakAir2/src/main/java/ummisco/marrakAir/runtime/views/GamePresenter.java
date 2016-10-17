@@ -33,7 +33,7 @@ public class GamePresenter {
 			appBar.setNavIcon(MaterialDesignIcon.MENU.button(evt));
 //            appBar.setNavIcon(MaterialDesignIcon.MENU.button(e -> 
 //                       MobileApplication.getInstance().showLayer(GluonApplication.MENU_LAYER)));
-            appBar.setTitleText("Primary");
+            appBar.setTitleText("City controller");
             
             EventHandler<ActionEvent> evt2 = new EventHandler<ActionEvent>() {
 
@@ -44,7 +44,7 @@ public class GamePresenter {
 			};
 			
             
-            appBar.getActionItems().add(MaterialDesignIcon.SEARCH.button(evt2));
+       //     appBar.getActionItems().add(MaterialDesignIcon.SEARCH.button(evt2));
         }
     }
   
@@ -63,10 +63,4 @@ public class GamePresenter {
 	
     //	game.showingProperty().addListener();
     }
-    
-    @FXML
-    void buttonClick() {
-     //   label.setText("Hello JavaFX Universe!");
-    }
-    
 }

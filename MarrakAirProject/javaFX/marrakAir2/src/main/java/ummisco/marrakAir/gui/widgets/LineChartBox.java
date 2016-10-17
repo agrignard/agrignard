@@ -11,7 +11,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.LineChart;
-
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import ummisco.marrakAir.network.MQTTConnector;
 import ummisco.marrakAir.common.FollowedVariable;
@@ -52,6 +52,14 @@ public class LineChartBox<X,Y> extends LineChart<X,Y> implements Observer {
 	List<InternalPlot<X, Y>> myPlots;
 	
 	ObservableList<Series<X,Y>> myData;
+/*	public LineChartBox()
+	{
+		super((Axis<X>)new NumberAxis(), (Axis<Y>)new NumberAxis());
+		myPlots = new ArrayList<InternalPlot<X, Y>>();
+		this.setAnimated(true);
+		myData = FXCollections.observableArrayList();
+		this.setData(myData);
+	}*/
 	
 	@SuppressWarnings("unchecked")
 	public LineChartBox( Axis<X> xAxis,  Axis<Y> yAxis) {

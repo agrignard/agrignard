@@ -12,9 +12,11 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -37,11 +39,13 @@ public class SliderBox extends VBox {
 	public SliderBox()
 	{
 		this(DEFAULT_LABEL,DEFAULT_MIN_VALUE,DEFAULT_MAX_VALUE);
+	//	this.setPadding(new Insets(10));
 	}
 	
 	public SliderBox(String textLabel,float min, float max)
 	{
 		super();
+	//	this.setPadding(new Insets(30));
 		this.slider=new Slider(min,max,(max-min)/2);
 		this.slider.setOrientation(Orientation.VERTICAL);
 		slider.setShowTickLabels(true);
@@ -104,6 +108,7 @@ public class SliderBox extends VBox {
 	{
 		this.setAlignment(Pos.CENTER);
 		this.getChildren().clear();
+		
 		this.getChildren().add(drawSlider());
 		if(this.drawLabel)
 			this.getChildren().add(label);
@@ -113,8 +118,21 @@ public class SliderBox extends VBox {
 	private Node drawSlider()
 	{
 		if(drawButton == false)
-			return this.slider;
-		Pane res = null ; 
+			return drawSliderNoButton();
+		else
+			return drawSliderButton();
+		
+		
+	}
+	private Node drawSliderNoButton()
+	{
+		return this.slider;
+	}
+	private Node drawSliderButton()
+	{
+		GridPane res =new GridPane();
+		res.setAlignment(Pos.CENTER);
+		
 		EventHandler<ActionEvent> evt1 = new EventHandler<ActionEvent>() {
 
 			@Override
@@ -122,7 +140,10 @@ public class SliderBox extends VBox {
 				slider.increment();
 			}
 		};
-		FloatingActionButton badd = new FloatingActionButton(MaterialDesignIcon.ADD.text, evt1);
+		
+		Button badd = MaterialDesignIcon.ADD.button();// evt1);
+		badd.setOnAction(evt1);
+		badd.setPrefHeight(this.getHeight()/6);
 		EventHandler<ActionEvent> evt2 = new EventHandler<ActionEvent>() {
 
 			@Override
@@ -130,31 +151,24 @@ public class SliderBox extends VBox {
 				slider.decrement();
 			}
 		};
-
-		FloatingActionButton bremove = new FloatingActionButton(MaterialDesignIcon.REMOVE.text, evt2);
-        this.setAlignment(Pos.CENTER);
-        badd.setAlignment(Pos.CENTER);
-        badd.setPrefHeight(DEFAULT_MAX_VALUE);
-        bremove.setAlignment(Pos.CENTER);
-        badd.setPadding(new Insets(10,0,20,0));
-        bremove.setPadding(new Insets(20,0,20,0));
-		//this.setPadding(new Insets(100));
 		
-       if(this.slider.getOrientation()==Orientation.VERTICAL)
+		Button bremove = MaterialDesignIcon.REMOVE.button();// evt1);
+		bremove.setOnAction(evt2);
+		
+		//FloatingActionButton bremove = new FloatingActionButton(MaterialDesignIcon.REMOVE.text, evt2);
+		
+		bremove.setPrefHeight(this.getHeight()/6);
+		if(this.slider.getOrientation()==Orientation.VERTICAL)
 			{
-    	   	VBox res1 =  new VBox();
-            (res1).getChildren().add(badd);
-            (res1).getChildren().add(this.slider);
-            (res1).getChildren().add(bremove);
-            res1.setSpacing(0);
-            res = res1;
-			}
+	     		res.add(badd, 0, 0);
+	      		res.add(this.slider, 0, 1);
+	      		res.add(bremove, 0, 2);
+	       	}
 		else
 			{
-				res =  new HBox();
-		          (res).getChildren().add(bremove);
-		            (res).getChildren().add(this.slider);
-		            (res).getChildren().add(badd);
+     		res.add(badd, 0, 0);
+      		res.add(this.slider, 1,0);
+      		res.add(bremove, 2, 0);
 		  
 			}
 
