@@ -138,6 +138,10 @@ public class SliderBox extends VBox {
 			@Override
 			public void handle(ActionEvent event) {
 				slider.increment();
+				value = slider.getValue();
+				fireEvent(new ValueChangedEvent(agentName,agentAttribute,value));
+
+				//fireEvent(new ValueChangedEvent(agentName,agentAttribute,value));
 			}
 		};
 		
@@ -149,6 +153,10 @@ public class SliderBox extends VBox {
 			@Override
 			public void handle(ActionEvent event) {
 				slider.decrement();
+				value = slider.getValue();
+				fireEvent(new ValueChangedEvent(agentName,agentAttribute,value));
+
+				//fireEvent(new ValueChangedEvent(agentName,agentAttribute,value));
 			}
 		};
 		

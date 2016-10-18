@@ -23,11 +23,13 @@ public class LineChartBox<X,Y> extends LineChart<X,Y> implements Observer {
 		Y ordinate;
 		LineChart.Series<X, Y> datas;
 		
-		public InternalPlot(X a, Y b)
+		public InternalPlot(X a, Y b, String leg)
 		{
 			this.absciss = a;
 			this.ordinate = b;
 			datas=new LineChart.Series<X, Y>();
+			datas.setName(leg);
+			
 			
 		}
 		public X getAbsciss()
@@ -117,7 +119,7 @@ public class LineChartBox<X,Y> extends LineChart<X,Y> implements Observer {
 		for(String tmp : variables)
 		{
 			String[] dt = tmp.split("::");
-			InternalPlot<X,Y> plt = new InternalPlot(dt[0], dt[1]);
+			InternalPlot<X,Y> plt = new InternalPlot(dt[0], dt[1],dt[2]);
 			System.out.println("register "+ tmp);
 			myPlots.add(plt);
 			myData.add(plt.getSeries());
@@ -148,7 +150,6 @@ public class LineChartBox<X,Y> extends LineChart<X,Y> implements Observer {
 		{
 			FollowedVariable f = (FollowedVariable)o;
 			List<Map<String,Object>> datas = f.popLastData();
-			System.out.println("chello "+ datas);
 			for(Map<String,Object> dts:datas)
 			{
 				updateData(dts);

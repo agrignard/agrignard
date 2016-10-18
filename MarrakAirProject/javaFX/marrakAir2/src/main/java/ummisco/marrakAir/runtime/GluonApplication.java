@@ -1,9 +1,13 @@
 package ummisco.marrakAir.runtime;
 
+import ummisco.marrakAir.network.MQTTConnector;
+import ummisco.marrakAir.runtime.views.GamePresenter;
 import ummisco.marrakAir.runtime.views.GameView;
 import ummisco.marrakAir.runtime.views.SecondaryView;
 
 import java.util.function.Supplier;
+
+import org.eclipse.paho.client.mqttv3.MqttException;
 
 import com.gluonhq.charm.glisten.application.MobileApplication;
 import com.gluonhq.charm.glisten.control.Avatar;
@@ -30,7 +34,13 @@ public class GluonApplication extends MobileApplication {
     
     @Override
     public void init() {
-    	
+    	try {
+			MQTTConnector connection = new MQTTConnector("localhost", null, null);
+			GamePresenter.setConnection(connection);
+		} catch (MqttException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	//addViewFactory(PRIMARY_VIEW, () -> (View) new PrimaryView().getView());
     	//this.addLayerFactory(PRIMARY_VIEW, (VBox) new GameView().); 
     	Supplier<View> v1 = new Supplier<View>() {
