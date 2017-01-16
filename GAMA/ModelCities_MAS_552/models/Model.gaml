@@ -100,7 +100,7 @@ species people skills:[moving]{
 		if(objective = "working"){
 			color <-#green;
 		}
-		draw circle(20) color: #gray;
+		draw circle(20) color: color;
 	}
 }
 
@@ -110,6 +110,10 @@ experiment road_traffic type: gui {
 			species building aspect: base ;
 			species road aspect: base ;
 			species people aspect: base ;		
+		}
+		
+		display city_display2  type:opengl rotate:9.74{
+			species people aspect: base trace:10 fading: true ;		
 		}
 	}
 }
