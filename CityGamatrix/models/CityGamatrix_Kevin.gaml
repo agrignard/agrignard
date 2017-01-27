@@ -8,19 +8,19 @@
 model json_loading   
 
 global {
+	
 	file JsonFile <- json_file("../includes/cityIO.json");
     map<string, unknown> c <- JsonFile.contents;
     map<int,rgb> peopleColors <-[0::#blue, 1::#yellow, 2::#red,3::#blue, 4::#yellow, 5::#red];
     map<int,rgb> buildingColors <-[0::rgb(189,183,107), 1::rgb(189,183,107), 2::rgb(189,183,107),3::rgb(230,230,230), 4::rgb(230,230,230), 5::rgb(230,230,230)];
     map<int,geometry> peopleShape <-[0::square(0.5), 1::circle(0.25), 2::triangle(0.5)];
     file andorra_texture <- file('../images/andorrABM.png');
-    	
     int nb_pedestrians <- 0 max: 10 min: 0 parameter: "Pedestrians:" category: "Environment";
-    int nb_pev <- 10 max: 100 min: 0 parameter: "PEVs:" category: "Environment";
+    int nb_pev <- 20 max: 100 min: 0 parameter: "PEVs:" category: "Environment";
     int nb_car <- 0 max: 10 min: 0 parameter: "Cars:" category: "Environment";
     
-    list< map<string, unknown> > job_list <- [];
-    
+    int matrix_size <- 16;
+    list< map<string, unknown> > job_queue <- [];
     file prob <- text_file("../includes/demand.txt");
 	list<float> prob_array <- [];
 	int max_building_density <- 25;
@@ -31,7 +31,14 @@ global {
 	list<int> density_array <- c["objects"]["density"];
 	float max_prob;
 	int job_interval <- 10;
+	int graph_interval <- 1000;
 	int maximumJobCount <- 10;
+	
+	int max_wait_time <- 15 * 60;
+	
+	int missed_jobs <- 0;
+	int completed_jobs <- 0;
+	int total_jobs <- 0;
    
 	init { 
 		list<map<string, int>> cells <- c["grid"];
@@ -90,11 +97,65 @@ global {
             	  	color <- peopleColors[rnd(2)];	
             	  	speed <-0.3;
             	  } 
+	}
+	
+	action findLocation(map<string, float> result) {
+		int total_density <- 0;
+		int random_density <- rnd(0, total_population);
+		bool done <- false;
+		loop cell over: cityMatrix {
+			if (cell.density > 0) {
+				// Some sort of building cell.
+				total_density <- total_density + cell.density;
+				if (total_density >= random_density) {
+					// We have found our building.
+					bool found <- false;
+					int i <- 1;
+					list<cityMatrix> neighbors;
+					loop while: (found = false) {
+						neighbors <- cell.neighbors where (each.type = 6);
+						found <- length(neighbors) != 0;
+						i <- i + 1;
+						if (i > matrix_size) {
+							break;
+						}
+					}
+					if (found) {
+						point road_cell <- one_of(neighbors).location;
+						// Return a map???
+						result['x'] <- float(road_cell.x);
+						result['y'] <- float(road_cell.y);
+						done <- true;
+						return;
+					} else {
+						break;
+					}
+				}
+			}
+		}
+		if (not done) {
+			point road_cell <- one_of(cityMatrix where (each.type = 6)).location;
+			result['x'] <- float(road_cell.x);
+			result['y'] <- float(road_cell.y);
+			return;
+		}
 	} 
 	
-	reflex job_create when: every(job_interval # cycle)
+	reflex job_manage when: every(job_interval # cycles)
 	{
-		write string(length(job_list)) color: # black;
+		
+		// Manage any missed jobs.
+		
+		loop job over: job_queue {
+			if (current_second - int(job['start']) > max_wait_time) {
+				missed_jobs <- missed_jobs + 1;
+				total_jobs <- total_jobs + 1;
+				remove job from: job_queue;
+			}
+		}
+		
+		// Add new jobs.
+		
 		float p <- prob_array[current_second];
 		float r <- rnd(0, max_prob);
 		if (r <= p)
@@ -114,22 +175,27 @@ global {
 					map<string, unknown> m;
 					m['start'] <- current_second;
 					m['status'] <- 'waiting';
-					// TODO: Find nearest road cell to building.
-					point p <- one_of(cityMatrix where (each.type = 6)).location;
-					m['pickup.x'] <- float(p.x);
-					m['pickup.y'] <- float(p.y);
-					point d <- one_of(cityMatrix where (each.type = 6)).location;
-					m['dropoff.x'] <- float(d.x);
-					m['dropoff.y'] <- float(d.y);
-					add m to: job_list;
+					map<string, float> pickup;
+					do findLocation(pickup);
+					m['pickup.x'] <- float(pickup['x']);
+					m['pickup.y'] <- float(pickup['y']);
+					map<string, float> dropoff;
+					do findLocation(dropoff);
+					m['dropoff.x'] <- float(dropoff['x']);
+					m['dropoff.y'] <- float(dropoff['y']);
+					add m to: job_queue;
 				}
 			} 
 		}
+		
+		// TODO: Create graphical representation of these values.
+		
+		write string(total_jobs) + ", " + string(completed_jobs) + ", " + string(missed_jobs) color: # black;
 
 	}
 } 
 
-grid cityMatrix width:16  height:16 {
+grid cityMatrix width:matrix_size  height:matrix_size {
 	int type;
 	rgb color;
 	int density;
@@ -154,14 +220,14 @@ species pev skills: [moving] {
 	map<string, unknown> pev_job;
 	
 	aspect base {
-		draw circle(2) at: location color: color;
+		draw circle(1.5) at: location color: color;
 	}
 	
 	action findNewTarget {
 		if (status = 'wander') {
-			if (length(job_list) > 0) {
-				map<string, unknown> job <- job_list[0];
-				remove job from: job_list;
+			if (length(job_queue) > 0) {
+				map<string, unknown> job <- job_queue[0];
+				remove job from: job_queue;
 				pev_job <- job;
 				status <- 'pickup';
 				float p_x <- float(job['pickup.x']);
@@ -170,7 +236,7 @@ species pev skills: [moving] {
 				color <- # green;
 			} else {
 				status <- 'wander';
-				target <- one_of(cityMatrix where (each.type = 6)).location;
+				target <- one_of(cityMatrix where (each.type = 6 and each.location distance_to self >= matrix_size / 2)).location;
 				color <- # white;
 			}
 		} else if (status = 'pickup') {
@@ -180,8 +246,10 @@ species pev skills: [moving] {
 			target <- { d_x, d_y, 0.0};
 			color <- # blue;
 		} else if (status = 'dropoff') {
+			completed_jobs <- completed_jobs + 1;
+			total_jobs <- total_jobs + 1;
 			status <- 'wander';
-			target <- one_of(cityMatrix where (each.type = 6)).location;
+			target <- one_of(cityMatrix where (each.type = 6 and each.location distance_to self >= matrix_size / 2)).location;
 			color <- # white;
 		}
 	}
@@ -191,9 +259,9 @@ species pev skills: [moving] {
 		if (target = location) {
 			do findNewTarget;
 		} else if (status = 'wander') {
-			if (length(job_list) > 0) {
-				map<string, unknown> job <- job_list[0];
-				remove job from: job_list;
+			if (length(job_queue) > 0) {
+				map<string, unknown> job <- job_queue[0];
+				remove job from: job_queue;
 				pev_job <- job;
 				status <- 'pickup';
 				float p_x <- float(job['pickup.x']);
@@ -254,6 +322,12 @@ experiment Display  type: gui {
 				draw rectangle(300,100) texture:andorra_texture.path at:{450,50,0} color:#gray;
 				draw rectangle(300,100)  at:{450,50,-feetSize*0.75} color:#gray;
 			}*/	
+		}
+		
+		display chart refresh: every(graph_interval # cycles) {
+			chart "Job Rate" type: series {
+				data "Completion Rate" value: completed_jobs / (total_jobs = 0 ? 1 : total_jobs) color: # green;
+			}
 		}
 	}
 }
