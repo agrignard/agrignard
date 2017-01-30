@@ -1,10 +1,14 @@
+/* Program to scroll images automatically from a specified dropbox folder.
+Arnaud Grignard - Changing Places Group - MIT Media LAb - October 2016
+*/
+
 import deadpixel.keystone.*;
 import processing.video.*;
 import java.io.File;
 
 
-public int displayWidth = 2000;
-public int displayHeight = 1000;
+public int displayWidth = 1200;
+public int displayHeight = 1200;
 
 Keystone ks;
 CornerPinSurface surface;
