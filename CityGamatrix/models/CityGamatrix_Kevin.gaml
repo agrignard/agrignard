@@ -39,13 +39,23 @@ global {
 	int missed_jobs <- 0;
 	int completed_jobs <- 0;
 	int total_jobs <- 0;
+	
+	int traffic_interval <- 60 * 60 # cycles;
+	float max_traffic_count <- 1500.0 * traffic_interval / 3600 * nb_pev / 10;
+	
+	// TODO: Find better metric for these values above.
+	// TODO: Are all of these variables INPUTS into the simulation? Down the road, these can certainly result in different "configurations."
    
-	init { 
+	init {
+		
+		starting_date <- date([2017,1,1,0,0,0]);
+		
 		list<map<string, int>> cells <- c["grid"];
 		
         loop mm over: cells {                 
             cityMatrix cell <- cityMatrix grid_at {mm["x"],mm["y"]};
             cell.type <-int(mm["type"]);
+            cell.recent_traffic <- 0;
             if(int(cell.type) = 6){
             	  cell.color <-rgb(40,40,40);
             	  cell.density <- 0;
@@ -66,23 +76,21 @@ global {
 		}
 		
 		max_prob <- max(prob_array);
-        
-        loop i from: 0 to: nb_pev - 1 {
-        	create pev {
-	    	  	pev_id <- i;
-	    	  	location <- one_of(cityMatrix where (each.type = 6)).location + {rnd(-2.0,2.0),rnd(-2.0,2.0)};
-	    	  	color <- # white;
-	    	  	speed <-0.2;
-	    	  	status <- "wander";
-	    	 }
-        }
+        	
+    	create pev number: nb_pev {
+    	  	location <- one_of(cityMatrix where (each.type = 6)).location; // + {rnd(-2.0,2.0),rnd(-2.0,2.0)};
+    	  	color <- # white;
+    	  	speed <- 0.2;
+    	  	// TODO: Determine correct speed.
+    	  	status <- "wander";
+    	 }
         
         ask pev {
         	do findNewTarget;
         }
 	}
 	
-	action initAgent (cityMatrix cell){
+	/*action initAgent (cityMatrix cell){
 		 create people number:nb_pedestrians{
             	  	id <-int(cell.type);
             	  	shape <- geometry(peopleShape[0]);
@@ -97,39 +105,39 @@ global {
             	  	color <- peopleColors[rnd(2)];	
             	  	speed <-0.3;
             	  } 
-	}
+	}*/
+	
+	// TODO: Optimize this method for finding buildings based off density.
 	
 	action findLocation(map<string, float> result) {
 		int total_density <- 0;
 		int random_density <- rnd(0, total_population);
 		bool done <- false;
-		loop cell over: cityMatrix {
-			if (cell.density > 0) {
-				// Some sort of building cell.
-				total_density <- total_density + cell.density;
-				if (total_density >= random_density) {
-					// We have found our building.
-					bool found <- false;
-					int i <- 1;
-					list<cityMatrix> neighbors;
-					loop while: (found = false) {
-						neighbors <- cell.neighbors where (each.type = 6);
-						found <- length(neighbors) != 0;
-						i <- i + 1;
-						if (i > matrix_size) {
-							break;
-						}
-					}
-					if (found) {
-						point road_cell <- one_of(neighbors).location;
-						// Return a map???
-						result['x'] <- float(road_cell.x);
-						result['y'] <- float(road_cell.y);
-						done <- true;
-						return;
-					} else {
+		list<cityMatrix> cells <- cityMatrix where (each.density > 0);
+		loop cell over: cells {
+			// Some sort of building cell.
+			total_density <- total_density + cell.density;
+			if (total_density >= random_density) {
+				// We have found our building.
+				bool found <- false;
+				int i <- 1;
+				list<cityMatrix> neighbors;
+				loop while: (found = false) {
+					neighbors <- cell neighbors_at i where (each.type = 6);
+					found <- length(neighbors) != 0;
+					i <- i + 1;
+					if (i > matrix_size / 2) {
 						break;
 					}
+				}
+				if (found) {
+					point road_cell <- one_of(neighbors).location;
+					result['x'] <- float(road_cell.x);
+					result['y'] <- float(road_cell.y);
+					done <- true;
+					return;
+				} else {
+					break;
 				}
 			}
 		}
@@ -139,19 +147,17 @@ global {
 			result['y'] <- float(road_cell.y);
 			return;
 		}
-	} 
+	}
 	
 	reflex job_manage when: every(job_interval # cycles)
 	{
 		
 		// Manage any missed jobs.
 		
-		loop job over: job_queue {
-			if (current_second - int(job['start']) > max_wait_time) {
-				missed_jobs <- missed_jobs + 1;
-				total_jobs <- total_jobs + 1;
-				remove job from: job_queue;
-			}
+		loop job over: job_queue where (current_second - int(each['start']) > max_wait_time) {
+			missed_jobs <- missed_jobs + 1;
+			total_jobs <- total_jobs + 1;
+			remove job from: job_queue;
 		}
 		
 		// Add new jobs.
@@ -167,14 +173,12 @@ global {
 			} else
 			{
 				job_count <- int(floor(r * job_interval));
-				// write string(job_count) color: #black;
 			}
 			if (job_count > 0)
 			{
 				loop i from: 0 to: job_count - 1 {
 					map<string, unknown> m;
 					m['start'] <- current_second;
-					m['status'] <- 'waiting';
 					map<string, float> pickup;
 					do findLocation(pickup);
 					m['pickup.x'] <- float(pickup['x']);
@@ -188,23 +192,42 @@ global {
 			} 
 		}
 		
-		// TODO: Create graphical representation of these values.
-		
-		write string(total_jobs) + ", " + string(completed_jobs) + ", " + string(missed_jobs) color: # black;
+		//write string(total_jobs) + ", " + string(completed_jobs) + ", " + string(missed_jobs) color: # black;
 
 	}
-} 
+}
 
 grid cityMatrix width:matrix_size  height:matrix_size {
 	int type;
 	rgb color;
 	int density;
+	int recent_traffic;
+	
+	reflex traffic_count {
+		if (type = 6) {
+			recent_traffic <- recent_traffic + length(agents_inside(self));
+		}
+	}
+	
+	reflex traffic_draw when: every(traffic_interval # cycles) {
+		// From http://stackoverflow.com/questions/20792445/calculate-rgb-value-for-a-range-of-values-to-create-heat-map.
+		if (type = 6) {
+			float minimum <- 0.0;
+			float ratio <- 2 * (float(recent_traffic) - minimum) / (max_traffic_count - minimum);
+	    	int b <- int(max([0, 255*(1 - ratio)]));
+	    	int r <- int(max([0, 255*(ratio - 1)]));
+	    	int g <- 255 - b - r;
+	    	color <- rgb(r, g, b);
+			recent_traffic <- 0;
+		}
+	}
 	
    	aspect base{	
-   		 draw shape color:color border:#black;	
+   		 draw shape color:color border: #black;	
     }
     aspect depth{
-	  draw shape color:color depth:density / max_building_density * 2;		
+    	// TODO: Update depth model.
+	  	draw shape color:color depth:density / max_building_density * 2;		
 	}
 	
 	aspect andorra{
@@ -213,7 +236,6 @@ grid cityMatrix width:matrix_size  height:matrix_size {
 }
 
 species pev skills: [moving] {
-	int pev_id;
 	point target;
 	rgb color;
 	string status;
@@ -273,7 +295,7 @@ species pev skills: [moving] {
 	}
 }
 
-species people skills:[moving]{
+/*species people skills:[moving]{
 	int id;
 	point target;
 	rgb color;
@@ -294,14 +316,14 @@ species people skills:[moving]{
 			do findNewTarget;
 		}
 	}
-}
+}*/
 
 experiment Display  type: gui {
 	output {
 
 		display cityMatrixView   type:opengl background:#black {	
 			species cityMatrix aspect:depth;
-			species people aspect:base;
+			//species people aspect:base;
 			species pev aspect:base;
 			/*species cityMatrix aspect:base position:{400,30,0.1} size:{0.4,0.4,0.4};
 			species people aspect:base position:{400,30,0.1} size:{0.4,0.4,0.4};	
@@ -324,10 +346,19 @@ experiment Display  type: gui {
 			}*/	
 		}
 		
-		display chart refresh: every(graph_interval # cycles) {
+		display job_chart refresh: every(graph_interval # cycles) {
 			chart "Job Rate" type: series {
 				data "Completion Rate" value: completed_jobs / (total_jobs = 0 ? 1 : total_jobs) color: # green;
 			}
 		}
+		
+		/*display prob_chart refresh: every(10 # cycles) {
+			chart "Probability" type: series {
+				data "Demand Value" value: prob_array[current_second] color: # blue;
+			}
+		}*/
+		
+		monitor time value:string(current_date.hour) + ":" + (current_date.minute < 10 ? "0" + string(current_date.minute) : string(current_date.minute)) refresh:every(1 # minute);
+		monitor completion value: string((completed_jobs / (total_jobs = 0 ? 1 : total_jobs) * 100) with_precision 1) + "%" refresh: every(1 # minute);
 	}
 }
