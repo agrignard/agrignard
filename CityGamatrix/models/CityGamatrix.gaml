@@ -15,7 +15,7 @@ global {
     map<int,rgb> buildingColors <-[0::rgb(189,183,107), 1::rgb(189,183,107), 2::rgb(189,183,107),3::rgb(230,230,230), 4::rgb(230,230,230), 5::rgb(230,230,230),6::rgb(40,40,40)];
     list<map<string, int>> cells;
 	list<float> density_array;
-	bool onlineGrid <-false parameter: "Online Grid:" category: "Environment";
+	bool onlineGrid <-true parameter: "Online Grid:" category: "Environment";
 	bool dynamicGrid <-false parameter: "Update Grid:" category: "Environment";
 	int refresh <- 100 min: 1 max:1000 parameter: "Refresh rate (cycle):" category: "Environment";
 	
@@ -61,12 +61,12 @@ grid cityMatrix width:16  height:16 {
 
 experiment Display  type: gui {
 	output {
-		display cityMatrixView   type:opengl background:#black {	
+		display cityMatrixView  type:opengl background:#black {	
 			species cityMatrix aspect:base;
 		}
-		display cityMatrixViewKeystone   type:opengl use_shader:true keystone:true background:#black {	
+		/*display cityMatrixViewKeystone   type:opengl use_shader:true keystone:true background:#black {	
 			species cityMatrix aspect:flat;
-		}
+		}*/
 	}
 }
 
