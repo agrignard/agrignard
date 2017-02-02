@@ -1,11 +1,11 @@
 /**
-* Name: JSON File Loading
-* Author:  Arnaud Grignard
-* Description: Initialize a grid from a JSON FIle. 
-* Tags:  load_file, grid, json
+* Name: PEV Model
+* Authosr: Arnaud Grignard, Kevin Lyons
+* Description: Load CityMatrix view and run PEV agent simulation over time.
+* Tags:  pev, cityMatrix, gama
 */
 
-model json_loading
+model pev_model
 
 import "CityGamatrix.gaml"
 
