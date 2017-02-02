@@ -21,14 +21,14 @@ global {
 	int refresh <- 1000 min: 1 max:1000 parameter: "Refresh rate (cycle):" category: "Grid";
 	bool surround <- true parameter: "Surrounding Road:" category: "Grid";
 	
+	int matrix_size;
+	
 	bool looping <- false parameter: "Continuous Demo:" category: "Environment";
 	
-	string filename;
-	
-	int matrix_size <- 18;
+	string filename <- '../includes/cityIO.json'; 
 	
 	init {
-        //do initGrid;
+        do initGrid;
 	}
 	
 	action initGrid{
@@ -41,44 +41,16 @@ global {
 		cells <- matrixData["grid"];
 		//density_array <- matrixData["objects"]["density"];
 		density_array <- [30.0, 20.0, 10.0, 25.0, 15.0, 5.0];
-		loop c over: cells {                
-            cityMatrix cell <- cityMatrix grid_at { 15 - c["x"] + 1, c["y"] + 1};
+		int a <- (matrix_size = 18) ? 1 : 0;
+		write a color: # black;
+		loop c over: cells {
+			int x <- 15 - c["x"] + a;
+			int y <- c["y"] + a;               
+            cityMatrix cell <- cityMatrix grid_at { 15 - c["x"] + a, c["y"] + a};
             cell.type <- int(c["type"]);
             cell.color <- (cell.type = -1) ? # gray : buildingColors[cell.type];
             cell.density <- (cell.type = -1 or cell.type= 6) ? 0.0 : density_array[cell.type];
         }
-         
-		// Top edge.
-		loop i from: 0 to: matrix_size - 1 {
-			cityMatrix cell <- cityMatrix grid_at { i , 0 };
-			cell.type <- surround ? 6 : -1;
-			cell.color <- surround ? buildingColors[6] : # black;
-			cell.density <- 0.0;
-		}
-		
-		// Bottom edge.
-		loop i from: 0 to: matrix_size - 1 {
-			cityMatrix cell <- cityMatrix grid_at { i , matrix_size - 1 };
-			cell.type <- surround ? 6 : -1;
-			cell.color <- surround ? buildingColors[6] : # black;
-			cell.density <- 0.0;
-		}
-		
-		 
-		// Left edge.
-		loop i from: 0 to: matrix_size - 1 {
-			cityMatrix cell <- cityMatrix grid_at { 0 , i };
-			cell.type <- surround ? 6 : -1;
-			cell.color <- surround ? buildingColors[6] : # black;
-			cell.density <- 0.0;
-		}
-		// Right edge.
-		loop i from: 0 to: matrix_size - 1 {
-			cityMatrix cell <- cityMatrix grid_at { matrix_size - 1 , i };
-			cell.type <- surround ? 6 : -1;
-			cell.color <- surround ? buildingColors[6] : # black;
-			cell.density <- 0.0;
-		}
 	}
 	
 	reflex updateGrid when: ((cycle mod refresh) = 0) and (dynamicGrid = true) {

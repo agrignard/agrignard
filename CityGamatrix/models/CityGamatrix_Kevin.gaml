@@ -37,7 +37,7 @@ global {
 	
 	bool do_traffic_visualization;
 	
-	matrix traffic <- 0 as_matrix({ matrix_size, matrix_size });
+	matrix traffic; // <- 0 as_matrix({ matrix_size, matrix_size });
 	
 	// TODO: Find better metric for these values above.
 	// TODO: Are all of these variables INPUTS into the simulation? Down the road, these can certainly result in different "configurations."
@@ -47,8 +47,43 @@ global {
 		starting_date <- date([2017,1,1,0,0,0]);
 		
 		filename <- '../includes/mobility_configurations/diagonal.json';
- 
+		
+		matrix_size <- 18;
+		
+		traffic <- 0 as_matrix({ matrix_size, matrix_size });
+ 		
 		do initGrid;
+		
+		// Top edge.
+		loop i from: 0 to: matrix_size - 1 {
+			cityMatrix cell <- cityMatrix grid_at { i , 0 };
+			cell.type <- surround ? 6 : -1;
+			cell.color <- surround ? buildingColors[6] : # black;
+			cell.density <- 0.0;
+		}
+		
+		// Bottom edge.
+		loop i from: 0 to: matrix_size - 1 {
+			cityMatrix cell <- cityMatrix grid_at { i , matrix_size - 1 };
+			cell.type <- surround ? 6 : -1;
+			cell.color <- surround ? buildingColors[6] : # black;
+			cell.density <- 0.0;
+		}
+		 
+		// Left edge.
+		loop i from: 0 to: matrix_size - 1 {
+			cityMatrix cell <- cityMatrix grid_at { 0 , i };
+			cell.type <- surround ? 6 : -1;
+			cell.color <- surround ? buildingColors[6] : # black;
+			cell.density <- 0.0;
+		}
+		// Right edge.
+		loop i from: 0 to: matrix_size - 1 {
+			cityMatrix cell <- cityMatrix grid_at { matrix_size - 1 , i };
+			cell.type <- surround ? 6 : -1;
+			cell.color <- surround ? buildingColors[6] : # black;
+			cell.density <- 0.0;
+		}
         
         loop r from: 0 to: length(prob) - 1
 		{
