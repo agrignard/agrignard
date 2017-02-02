@@ -16,16 +16,16 @@ global {
     list<map<string, int>> cells;
 	list<float> density_array;
 	
-	bool onlineGrid <- false parameter: "Online Grid:" category: "Grid";
+	bool onlineGrid <- true parameter: "Online Grid:" category: "Grid";
 	bool dynamicGrid <- false parameter: "Update Grid:" category: "Grid";
 	int refresh <- 1000 min: 1 max:1000 parameter: "Refresh rate (cycle):" category: "Grid";
 	bool surround <- true parameter: "Surrounding Road:" category: "Grid";
 	
-	int matrix_size;
+	int matrix_size <-18;
 	
 	bool looping <- false parameter: "Continuous Demo:" category: "Environment";
 	
-	string filename <- '../includes/cityIO.json'; 
+	string filename <- './../includes/cityIO.json'; 
 	
 	init {
         do initGrid;
@@ -75,12 +75,14 @@ grid cityMatrix width:matrix_size height:matrix_size {
 
 experiment Display  type: gui {
 	output {
-		display cityMatrixView  type:opengl background:#black {	
+		display cityMatrixView  type:opengl  background:#black {	
+			overlay position: { 0, 0 } size: { 150 #px, 75 #px }   border: #black rounded: true
+			{
+               draw "CityGamatrix" color: # white font: font("Helvetica", 20, #bold) at: { 0, 20};
+               draw "PEV Fleet" color: # white font: font("Helvetica", 14, #italic) at: { 100, 20};
+            }
 			species cityMatrix aspect:base;
 		}
-		/*display cityMatrixViewKeystone   type:opengl use_shader:true keystone:true background:#black {	
-			species cityMatrix aspect:flat;
-		}*/
 	}
 }
 
