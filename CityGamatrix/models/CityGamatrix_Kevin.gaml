@@ -256,7 +256,7 @@ experiment Display  type: gui {
 		
 		monitor Time value:string(current_date.hour) + ":" + (current_date.minute < 10 ? "0" + string(current_date.minute) : string(current_date.minute)) refresh:every(1 # minute);
 		monitor Completion value: string((completed_jobs / (total_jobs = 0 ? 1 : total_jobs) * 100) with_precision 1) + "%" refresh: every(1 # minute);
-		monitor Total value:total_jobs;
+		monitor Total value:total_jobs refresh: every(1 # minute);
 	}
 }
 
@@ -265,6 +265,6 @@ experiment Display_Light type: gui {
 	output {
 		monitor Time value:string(current_date.hour) + ":" + (current_date.minute < 10 ? "0" + string(current_date.minute) : string(current_date.minute)) refresh:every(1 # minute);
 		monitor Completion value: string((completed_jobs / (total_jobs = 0 ? 1 : total_jobs) * 100) with_precision 1) + "%" refresh: every(1 # minute);
-		monitor Total value:total_jobs;
+		monitor Total value:total_jobs refresh: every(1 # minute);
 	}
 }
