@@ -20,10 +20,9 @@ global {
 	bool dynamicGrid <- false parameter: "Update Grid:" category: "Grid";
 	int refresh <- 1000 min: 1 max:1000 parameter: "Refresh rate (cycle):" category: "Grid";
 	bool surround <- true parameter: "Surrounding Road:" category: "Grid";
-	
-	int matrix_size <-18;
-	
 	bool looping <- false parameter: "Continuous Demo:" category: "Environment";
+	
+	int matrix_size <- 18;
 	
 	string filename <- './../includes/cityIO.json'; 
 	
@@ -42,7 +41,6 @@ global {
 		//density_array <- matrixData["objects"]["density"];
 		density_array <- [30.0, 20.0, 10.0, 25.0, 15.0, 5.0];
 		int a <- (matrix_size = 18) ? 1 : 0;
-		write a color: # black;
 		loop c over: cells {
 			int x <- 15 - c["x"] + a;
 			int y <- c["y"] + a;               
@@ -53,8 +51,7 @@ global {
         }
 	}
 	
-	reflex updateGrid when: ((cycle mod refresh) = 0) and (dynamicGrid = true) {
-		// write "Refreshing grid...";	
+	reflex updateGrid when: ((cycle mod refresh) = 0) and (dynamicGrid = true) {	
 		do initGrid;
 	}
 }
@@ -85,5 +82,3 @@ experiment Display  type: gui {
 		}
 	}
 }
-
-
