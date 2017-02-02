@@ -5,36 +5,28 @@
 * Tags:  load_file, grid, json
 */
 
-model json_loading   
+model json_loading
+
+import "CityGamatrix.gaml"
 
 global {
-	
-	file JsonFile <- json_file("../includes/cityIO.json");
-    map<string, unknown> c <- JsonFile.contents;
-    map<int,rgb> peopleColors <-[0::#blue, 1::#yellow, 2::#red,3::#blue, 4::#yellow, 5::#red];
-    map<int,rgb> buildingColors <-[0::rgb(189,183,107), 1::rgb(189,183,107), 2::rgb(189,183,107),3::rgb(230,230,230), 4::rgb(230,230,230), 5::rgb(230,230,230)];
-    map<int,geometry> peopleShape <-[0::square(0.5), 1::circle(0.25), 2::triangle(0.5)];
-    file andorra_texture <- file('../images/andorrABM.png');
-    int nb_pedestrians <- 0 max: 10 min: 0 parameter: "Pedestrians:" category: "Environment";
-    int nb_pev <- 20 max: 100 min: 0 parameter: "PEVs:" category: "Environment";
-    int nb_car <- 0 max: 10 min: 0 parameter: "Cars:" category: "Environment";
-    
-    int matrix_size <- 16;
+    int nb_pev <- 10 parameter: "Number of PEVs:" category: "Environment";
     list< map<string, unknown> > job_queue <- [];
     file prob <- text_file("../includes/demand.txt");
 	list<float> prob_array <- [];
-	int max_building_density <- 25;
+	int max_building_density <- 30;
 	int people_per_floor <- 10;
 	int total_population <- 0;
 	float step <- 1 # second;
 	int current_second update: (time / # second) mod 86400;
-	list<int> density_array <- c["objects"]["density"];
+	list<int> density_array; // <- c["objects"]["density"];
+	int max_density <- max(density_array);
 	float max_prob;
 	int job_interval <- 10;
 	int graph_interval <- 1000;
-	int maximumJobCount <- 10;
 	
-	int max_wait_time <- 15 * 60;
+	int maximumJobCount <- 10 parameter: "Max Job Count:" category: "Environment";
+	int max_wait_time <- 15 parameter: "Max Wait Time (minutes):" category: "Environment";
 	
 	int missed_jobs <- 0;
 	int completed_jobs <- 0;
@@ -43,6 +35,10 @@ global {
 	int traffic_interval <- 60 * 60 # cycles;
 	float max_traffic_count <- 1500.0 * traffic_interval / 3600 * nb_pev / 10;
 	
+	bool do_traffic_visualization;
+	
+	matrix traffic <- 0 as_matrix({ matrix_size, matrix_size });
+	
 	// TODO: Find better metric for these values above.
 	// TODO: Are all of these variables INPUTS into the simulation? Down the road, these can certainly result in different "configurations."
    
@@ -50,25 +46,9 @@ global {
 		
 		starting_date <- date([2017,1,1,0,0,0]);
 		
-		list<map<string, int>> cells <- c["grid"];
-		
-        loop mm over: cells {                 
-            cityMatrix cell <- cityMatrix grid_at {mm["x"],mm["y"]};
-            cell.type <-int(mm["type"]);
-            cell.recent_traffic <- 0;
-            if(int(cell.type) = 6){
-            	  cell.color <-rgb(40,40,40);
-            	  cell.density <- 0;
-            	  // do initAgent(cell);       	  
-            } else if (int(cell.type) = -1) {
-            	  cell.color <- (flip(0.5) ? #green : #gray);
-            	  cell.density <- 0;
-            } else {
-            	  cell.color <- buildingColors[int(cell.type)];
-            	  cell.density <- int(density_array[int(cell.type)] * people_per_floor);
-				  total_population <- total_population + cell.density;
-            }
-        }
+		filename <- '../includes/mobility_configurations/diagonal.json';
+ 
+		do initGrid;
         
         loop r from: 0 to: length(prob) - 1
 		{
@@ -80,68 +60,61 @@ global {
     	create pev number: nb_pev {
     	  	location <- one_of(cityMatrix where (each.type = 6)).location; // + {rnd(-2.0,2.0),rnd(-2.0,2.0)};
     	  	color <- # white;
-    	  	speed <- 0.2;
+    	  	speed <- 0.3;
     	  	// TODO: Determine correct speed.
     	  	status <- "wander";
     	 }
         
-        ask pev {
+         ask pev {
         	do findNewTarget;
-        }
+         }
 	}
 	
-	/*action initAgent (cityMatrix cell){
-		 create people number:nb_pedestrians{
-            	  	id <-int(cell.type);
-            	  	shape <- geometry(peopleShape[0]);
-            	  	location <- cell.location + {rnd(-2.0,2.0),rnd(-2.0,2.0)};
-            	  	color <- peopleColors[rnd(2)];
-            	  	speed <-0.1;	
-            	  }
-            	  create people number:nb_car{
-            	  	id <-int(cell.type);
-            	  	shape <- geometry(peopleShape[2]);
-            	  	location <- cell.location + {rnd(-2.0,2.0),rnd(-2.0,2.0)};
-            	  	color <- peopleColors[rnd(2)];	
-            	  	speed <-0.3;
-            	  } 
-	}*/
+	reflex traffic_count when: do_traffic_visualization {
+		ask cityMatrix where (each.type = 6) {
+			// Figure out how to get x and y coordinates of each cell.
+			traffic[grid_x , grid_y] <- int(traffic[grid_x , grid_y]) + length(agents_inside(self));
+		}
+	}
 	
-	// TODO: Optimize this method for finding buildings based off density.
+	reflex traffic_draw when: every(traffic_interval # cycles) and do_traffic_visualization {
+		// From http://stackoverflow.com/questions/20792445/calculate-rgb-value-for-a-range-of-values-to-create-heat-map.
+		ask cityMatrix where (each.type = 6) {
+			float minimum <- 0.0;
+			int recent_traffic <- int(traffic[grid_x , grid_y]);
+			float ratio <- 2 * (float(recent_traffic) - minimum) / (max_traffic_count - minimum);
+	    	int b <- int(max([0, 255*(1 - ratio)]));
+	    	int r <- int(max([0, 255*(ratio - 1)]));
+	    	int g <- 255 - b - r;
+	    	color <- rgb(r, g, b);
+			traffic[grid_x , grid_y] <- 0;
+		}
+	}
 	
 	action findLocation(map<string, float> result) {
-		int total_density <- 0;
-		int random_density <- rnd(0, total_population);
-		bool done <- false;
-		list<cityMatrix> cells <- cityMatrix where (each.density > 0);
-		loop cell over: cells {
-			// Some sort of building cell.
-			total_density <- total_density + cell.density;
-			if (total_density >= random_density) {
-				// We have found our building.
-				bool found <- false;
-				int i <- 1;
-				list<cityMatrix> neighbors;
-				loop while: (found = false) {
-					neighbors <- cell neighbors_at i where (each.type = 6);
-					found <- length(neighbors) != 0;
-					i <- i + 1;
-					if (i > matrix_size / 2) {
-						break;
-					}
-				}
-				if (found) {
-					point road_cell <- one_of(neighbors).location;
-					result['x'] <- float(road_cell.x);
-					result['y'] <- float(road_cell.y);
-					done <- true;
-					return;
-				} else {
-					break;
-				}
+		int random_density <- rnd(1, max_density - 1);
+		list<cityMatrix> the_cells <- cityMatrix where (each.density > random_density);
+		loop while: length(cells) = 0 {
+			random_density <- rnd(1, max_density - 1);
+		}
+		bool found <- false;
+		cityMatrix cell <- one_of(the_cells);
+		list<cityMatrix> neighbors;
+		int i <- 0;
+		loop while: (found = false) {
+			neighbors <- cell neighbors_at i where (each.type = 6);
+			found <- length(neighbors) != 0;
+			i <- i + 1;
+			if (i > matrix_size / 3) {
+				break;
 			}
 		}
-		if (not done) {
+		if (found) {
+			point road_cell <- one_of(neighbors).location;
+			result['x'] <- float(road_cell.x);
+			result['y'] <- float(road_cell.y);
+			return;
+		} else {
 			point road_cell <- one_of(cityMatrix where (each.type = 6)).location;
 			result['x'] <- float(road_cell.x);
 			result['y'] <- float(road_cell.y);
@@ -151,6 +124,10 @@ global {
 	
 	reflex job_manage when: every(job_interval # cycles)
 	{
+		
+		if (time > # day and ! looping) {
+			do pause;
+		}
 		
 		// Manage any missed jobs.
 		
@@ -197,44 +174,6 @@ global {
 	}
 }
 
-grid cityMatrix width:matrix_size  height:matrix_size {
-	int type;
-	rgb color;
-	int density;
-	int recent_traffic;
-	
-	reflex traffic_count {
-		if (type = 6) {
-			recent_traffic <- recent_traffic + length(agents_inside(self));
-		}
-	}
-	
-	reflex traffic_draw when: every(traffic_interval # cycles) {
-		// From http://stackoverflow.com/questions/20792445/calculate-rgb-value-for-a-range-of-values-to-create-heat-map.
-		if (type = 6) {
-			float minimum <- 0.0;
-			float ratio <- 2 * (float(recent_traffic) - minimum) / (max_traffic_count - minimum);
-	    	int b <- int(max([0, 255*(1 - ratio)]));
-	    	int r <- int(max([0, 255*(ratio - 1)]));
-	    	int g <- 255 - b - r;
-	    	color <- rgb(r, g, b);
-			recent_traffic <- 0;
-		}
-	}
-	
-   	aspect base{	
-   		 draw shape color:color border: #black;	
-    }
-    aspect depth{
-    	// TODO: Update depth model.
-	  	draw shape color:color depth:density / max_building_density * 2;		
-	}
-	
-	aspect andorra{
-	  draw shape color:rgb(0,0,0,125) depth:10-type;		
-	}
-}
-
 species pev skills: [moving] {
 	point target;
 	rgb color;
@@ -266,7 +205,7 @@ species pev skills: [moving] {
 			float d_x <- float(pev_job['dropoff.x']);
 			float d_y <- float(pev_job['dropoff.y']);
 			target <- { d_x, d_y, 0.0};
-			color <- # blue;
+			color <- # red;
 		} else if (status = 'dropoff') {
 			completed_jobs <- completed_jobs + 1;
 			total_jobs <- total_jobs + 1;
@@ -295,62 +234,19 @@ species pev skills: [moving] {
 	}
 }
 
-/*species people skills:[moving]{
-	int id;
-	point target;
-	rgb color;
-	aspect base{
-	  draw shape at:location color:color;		
-	}
-		
-	action findNewTarget{
-		if(id =6){
-        		target <- one_of(cityMatrix where (each.type = 6)).location ;//+ {rnd(-2.0,2.0),rnd(-2.0,2.0)}; 		
-        	}
-
-	}
-	reflex move{
-		do goto target:target on:cityMatrix where (each.type = 6) speed: speed;
-		if (target = location){
-			write "target = lcoation" + self;
-			do findNewTarget;
-		}
-	}
-}*/
-
 experiment Display  type: gui {
+	parameter "Heat Map:" var: do_traffic_visualization <- true category: "Grid";
 	output {
-
 		display cityMatrixView   type:opengl background:#black {	
-			species cityMatrix aspect:depth;
-			//species people aspect:base;
-			species pev aspect:base;
-			/*species cityMatrix aspect:base position:{400,30,0.1} size:{0.4,0.4,0.4};
-			species people aspect:base position:{400,30,0.1} size:{0.4,0.4,0.4};	
-			
-			graphics table{
-				//CITYMATRIX
-				int feetSize <-75;
-				draw box(100/16,100/16,feetSize) at:{0,0,-feetSize} color:#white;
-				draw box(100/16,100/16,feetSize) at:{0,100,-feetSize} color:#white;
-				draw box(100/16,100/16,feetSize) at:{100,0,-feetSize} color:#white;
-				draw box(100/16,100/16,feetSize) at:{100,100,-feetSize} color:#white;
-				draw square(100) at:{50,50,-feetSize*0.75} color:#gray;
-				//ANDORRA
-				draw box(100/16,100/16,feetSize) at:{300,0,-feetSize} color:#white;
-				draw box(100/16,100/16,feetSize) at:{600,100,-feetSize} color:#white;
-				draw box(100/16,100/16,feetSize) at:{600,0,-feetSize} color:#white;
-				draw box(100/16,100/16,feetSize) at:{300,100,-feetSize} color:#white;
-				draw rectangle(300,100) texture:andorra_texture.path at:{450,50,0} color:#gray;
-				draw rectangle(300,100)  at:{450,50,-feetSize*0.75} color:#gray;
-			}*/	
+			species cityMatrix aspect:base;
+			species pev aspect:base;	
 		}
 		
-		display job_chart refresh: every(graph_interval # cycles) {
+		/*display job_chart refresh: every(graph_interval # cycles) {
 			chart "Job Rate" type: series {
 				data "Completion Rate" value: completed_jobs / (total_jobs = 0 ? 1 : total_jobs) color: # green;
 			}
-		}
+		}*/
 		
 		/*display prob_chart refresh: every(10 # cycles) {
 			chart "Probability" type: series {
@@ -358,7 +254,17 @@ experiment Display  type: gui {
 			}
 		}*/
 		
-		monitor time value:string(current_date.hour) + ":" + (current_date.minute < 10 ? "0" + string(current_date.minute) : string(current_date.minute)) refresh:every(1 # minute);
-		monitor completion value: string((completed_jobs / (total_jobs = 0 ? 1 : total_jobs) * 100) with_precision 1) + "%" refresh: every(1 # minute);
+		monitor Time value:string(current_date.hour) + ":" + (current_date.minute < 10 ? "0" + string(current_date.minute) : string(current_date.minute)) refresh:every(1 # minute);
+		monitor Completion value: string((completed_jobs / (total_jobs = 0 ? 1 : total_jobs) * 100) with_precision 1) + "%" refresh: every(1 # minute);
+		monitor Total value:total_jobs;
+	}
+}
+
+experiment Display_Light type: gui {
+	parameter "Heat Map:" var: do_traffic_visualization <- false category: "Grid";
+	output {
+		monitor Time value:string(current_date.hour) + ":" + (current_date.minute < 10 ? "0" + string(current_date.minute) : string(current_date.minute)) refresh:every(1 # minute);
+		monitor Completion value: string((completed_jobs / (total_jobs = 0 ? 1 : total_jobs) * 100) with_precision 1) + "%" refresh: every(1 # minute);
+		monitor Total value:total_jobs;
 	}
 }
