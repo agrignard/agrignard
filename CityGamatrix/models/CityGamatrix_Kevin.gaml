@@ -129,7 +129,7 @@ global {
 		string hour;
 		if (current_date.hour = 0) {
 			hour <- "12";
-		} else if (current_date.hour < 13) {
+		} else if (current_date.hour < 12) {
 			hour <- string(current_date.hour);
 		} else {
 			hour <- string(current_date.hour - 12);

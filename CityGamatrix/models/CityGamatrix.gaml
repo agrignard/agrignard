@@ -21,10 +21,9 @@ global {
 	int refresh <- 1000 min: 1 max:1000 parameter: "Refresh rate (cycle):" category: "Grid";
 	bool surround <- true parameter: "Surrounding Road:" category: "Grid";
 	bool looping <- false parameter: "Continuous Demo:" category: "Environment";
-	
 	int matrix_size <- 18;
-	
-	string filename <- './../includes/cityIO.json'; 
+	string filename <- './../includes/cityIO.json';
+	bool first <- true;
 	
 	init {
         do initGrid;
@@ -45,13 +44,18 @@ global {
 			int x <- 15 - c["x"] + a;
 			int y <- c["y"] + a;               
             cityMatrix cell <- cityMatrix grid_at { 15 - c["x"] + a, c["y"] + a};
-            cell.type <- int(c["type"]);
-            cell.color <- (cell.type = -1) ? # gray : buildingColors[cell.type];
+            if (! first and c["type"] = cell.type) {
+            	// Same type on update - don't change color.
+            } else {
+            	cell.type <- int(c["type"]);
+            	cell.color <- (cell.type = -1) ? # gray : buildingColors[cell.type];
+            }
             cell.density <- (cell.type = -1 or cell.type= 6) ? 0.0 : density_array[cell.type];
         }
 	}
 	
-	reflex updateGrid when: ((cycle mod refresh) = 0) and (dynamicGrid = true) {	
+	reflex updateGrid when: ((cycle mod refresh) = 0) and (dynamicGrid = true) {
+		first <- false;	
 		do initGrid;
 	}
 }
