@@ -10,43 +10,44 @@ model pev_model
 import "CityGamatrix.gaml"
 
 global {
-    int nb_pev <- 10 parameter: "Number of PEVs:" category: "Environment";
-    list< map<string, unknown> > job_queue <- [];
-    file prob <- text_file("../includes/demand.txt");
-	list<float> prob_array <- [];
-	int max_building_density <- 30;
-	int people_per_floor <- 10;
-	int total_population <- 0;
-	float step <- 1 # second;
-	int current_second update: (time / # second) mod 86400;
-	list<int> density_array; // <- c["objects"]["density"];
-	int max_density <- max(density_array);
-	float max_prob;
-	int job_interval <- 10;
-	int graph_interval <- 1000;
 	
+	// Configurations.
+	
+	// 1. Vehicle information.
+    int nb_pev <- 10 parameter: "Number of PEVs:" category: "Environment";
+    float pev_speed <- 15 # km / # h;
+    
+    // 2. Job generation..
+    list< map<string, unknown> > job_queue <- [];
+    int job_interval <- 10;
 	int maximumJobCount <- 10 parameter: "Max Job Count:" category: "Environment";
 	int max_wait_time <- 15 parameter: "Max Wait Time (minutes):" category: "Environment";
-	
 	int missed_jobs <- 0;
 	int completed_jobs <- 0;
 	int total_jobs <- 0;
+    file prob <- text_file("../includes/demand.txt");
+	list<float> prob_array <- [];
+	float max_prob;
 	
+	// 3. Timing and traffic visualization.
+	float step <- 1 # second;
+	int current_second update: (time / # second) mod 86400;
+	int graph_interval <- 1000;
 	int traffic_interval <- 60 * 60 # cycles;
-	
 	bool do_traffic_visualization;
-	
 	matrix traffic;
-	
 	string time_string;
 	int current_day;
    
 	init {
 		
+		// Set grid to be 1 km square.
+		
 		time_string <- "12:00 AM";
 		starting_date <- date([2017,1,1,0,0,0]);
 		
 		filename <- '../includes/mobility_configurations/diagonal.json';
+		
 		matrix_size <- 18;
 		
 		traffic <- 0 as_matrix({ matrix_size, matrix_size });
@@ -78,6 +79,7 @@ global {
 			cell.color <- surround ? buildingColors[6] : # black;
 			cell.density <- 0.0;
 		}
+		
 		// Right edge.
 		loop i from: 0 to: matrix_size - 1 {
 			cityMatrix cell <- cityMatrix grid_at { matrix_size - 1 , i };
@@ -86,6 +88,7 @@ global {
 			cell.density <- 0.0;
 		}
         
+        // Initialize job probability array.
         loop r from: 0 to: length(prob) - 1
 		{
 			add (float(prob[r]) * maximumJobCount / 60) to: prob_array;
@@ -93,11 +96,11 @@ global {
 		
 		max_prob <- max(prob_array);
         	
+        // Create PEV agents and init.
     	create pev number: nb_pev {
     	  	location <- one_of(cityMatrix where (each.type = 6)).location;
     	  	color <- # white;
-    	  	speed <- 0.3;
-    	  	// TODO: Determine correct speed.
+    	  	speed <- pev_speed;
     	  	status <- "wander";
     	 }
         
@@ -106,12 +109,14 @@ global {
          }
 	}
 	
+	// Accumulate traffic on each road cell.
 	reflex traffic_count when: do_traffic_visualization {
 		ask cityMatrix where (each.type = 6) {
 			traffic[grid_x , grid_y] <- int(traffic[grid_x , grid_y]) + length(agents_inside(self));
 		}
 	}
 	
+	// Draw traffic heatmap.
 	reflex traffic_draw when: every(traffic_interval # cycles) and do_traffic_visualization {
 		ask cityMatrix where (each.type = 6) {
 			float minimum <- 0.0;
@@ -125,6 +130,7 @@ global {
 		}
 	}
 	
+	// Update time string for visualization.
 	reflex update_time when: every(1 # minute) {
 		string hour;
 		if (current_date.hour = 0) {
@@ -139,15 +145,18 @@ global {
 		time_string <- 	hour + ":" + minute + " " + type;
 	}
 	
+	// Update days for visualization.
 	reflex update_days when: every(1 # day) {
 		current_day <- current_day + 1;
 	}
 	
+	// Find a random location on map, skewed toward areas with higher building denisty.
 	action findLocation(map<string, float> result) {
-		int random_density <- rnd(1, max_density - 1);
+		float m <- max(density_array);
+		float random_density <- rnd(1, m - 1);
 		list<cityMatrix> the_cells <- cityMatrix where (each.density > random_density);
 		loop while: length(cells) = 0 {
-			random_density <- rnd(1, max_density - 1);
+			random_density <- rnd(1, m - 1);
 		}
 		bool found <- false;
 		cityMatrix cell <- one_of(the_cells);
@@ -174,16 +183,15 @@ global {
 		}
 	}
 	
+	// Manage our job queue.
 	reflex job_manage when: every(job_interval # cycles)
 	{
 		// Stop after 1 day for testing purposes.
-		
 		if (time > # day and ! looping) {
 			do pause;
 		}
 		
 		// Manage any missed jobs.
-		
 		loop job over: job_queue where (current_second - int(each['start']) > max_wait_time) {
 			missed_jobs <- missed_jobs + 1;
 			total_jobs <- total_jobs + 1;
@@ -191,7 +199,6 @@ global {
 		}
 		
 		// Add new jobs.
-		
 		float p <- prob_array[current_second];
 		float r <- rnd(0, max_prob);
 		if (r <= p)
@@ -232,20 +239,13 @@ species pev skills: [moving] {
 	map<string, unknown> pev_job;
 	
 	aspect base {
-		draw circle(1.5) at: location color: color;
+		draw circle(10) at: location color: color;
 	}
 	
 	action findNewTarget {
 		if (status = 'wander') {
 			if (length(job_queue) > 0) {
-				map<string, unknown> job <- job_queue[0];
-				remove job from: job_queue;
-				pev_job <- job;
-				status <- 'pickup';
-				float p_x <- float(job['pickup.x']);
-				float p_y <- float(job['pickup.y']);
-				target <- { p_x, p_y, 0.0};
-				color <- # orange;
+				do find;
 			} else {
 				status <- 'wander';
 				target <- one_of(cityMatrix where (each.type = 6 and each.location distance_to self >= matrix_size / 2)).location;
@@ -266,20 +266,26 @@ species pev skills: [moving] {
 		}
 	}
 	
+	// Pops job from front of queue and assigns to this PEV.
+	action find {
+		map<string, unknown> job <- job_queue[0];
+		remove job from: job_queue;
+		pev_job <- job;
+		status <- 'pickup';
+		float p_x <- float(job['pickup.x']);
+		float p_y <- float(job['pickup.y']);
+		target <- { p_x, p_y, 0.0};
+		color <- # orange;
+	}
+	
+	// Allows PEV to move through our matrix.
 	reflex move {
 		do goto target: target on: cityMatrix where (each.type = 6) speed: speed;
 		if (target = location) {
 			do findNewTarget;
 		} else if (status = 'wander') {
 			if (length(job_queue) > 0) {
-				map<string, unknown> job <- job_queue[0];
-				remove job from: job_queue;
-				pev_job <- job;
-				status <- 'pickup';
-				float p_x <- float(job['pickup.x']);
-				float p_y <- float(job['pickup.y']);
-				target <- { p_x, p_y, 0.0};
-				color <- # orange;
+				do find;
 			}
 		}
 	}
@@ -292,18 +298,6 @@ experiment Display  type: gui {
 			species cityMatrix aspect:base;
 			species pev aspect:base;	
 		}
-		
-		/*display job_chart refresh: every(graph_interval # cycles) {
-			chart "Job Rate" type: series {
-				data "Completion Rate" value: completed_jobs / (total_jobs = 0 ? 1 : total_jobs) color: # green;
-			}
-		}*/
-		
-		/*display prob_chart refresh: every(10 # cycles) {
-			chart "Probability" type: series {
-				data "Demand Value" value: prob_array[current_second] color: # blue;
-			}
-		}*/
 		
 		monitor 'Time' value:time_string refresh:every(1 # minute);
 		monitor 'Simulation Day' value: current_day refresh: every(1 # day);

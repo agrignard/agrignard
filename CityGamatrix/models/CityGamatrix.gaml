@@ -11,6 +11,9 @@
 model GamaMatrix   
 
 global {
+	
+	geometry shape <- square(1 #km);
+	
     map<string, unknown> matrixData;
     map<int,rgb> buildingColors <-[0::rgb(189,183,107), 1::rgb(189,183,107), 2::rgb(189,183,107),3::rgb(230,230,230), 4::rgb(230,230,230), 5::rgb(230,230,230),6::rgb(40,40,40)];
     list<map<string, int>> cells;
@@ -47,7 +50,12 @@ global {
             if (! first and c["type"] = cell.type) {
             	// Same type on update - don't change color.
             } else {
-            	cell.type <- int(c["type"]);
+            	if (int(c["type"]) = 7) {
+            		// Camera  boy edge case. Assume park.
+            		cell.type <- -1;
+            	} else {
+            		cell.type <- int(c["type"]);
+            	}
             	cell.color <- (cell.type = -1) ? # gray : buildingColors[cell.type];
             }
             cell.density <- (cell.type = -1 or cell.type= 6) ? 0.0 : density_array[cell.type];
@@ -66,11 +74,11 @@ grid cityMatrix width:matrix_size height:matrix_size {
 	float density;
 	
 	aspect flat{
-	  draw shape color:color  border:#black;		
+	  draw shape color:color border:#black;		
 	}
 	
     aspect base{
-	  draw shape color:color depth:density / 3 border:#black;		
+	  draw shape color:color depth:density * 2 border:#black;		
 	}
 }
 
