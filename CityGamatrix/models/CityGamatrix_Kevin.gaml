@@ -21,7 +21,7 @@ global {
     list< map<string, unknown> > job_queue <- [];
     int job_interval <- 10;
 	int maximumJobCount <- 10 parameter: "Max Job Count:" category: "Environment";
-	int max_wait_time <- 15 parameter: "Max Wait Time (minutes):" category: "Environment";
+	int max_wait_time <- 20 parameter: "Max Wait Time (minutes):" category: "Environment";
 	int missed_jobs <- 0;
 	int completed_jobs <- 0;
 	int total_jobs <- 0;
@@ -41,8 +41,6 @@ global {
    
 	init {
 		
-		// Set grid to be 1 km square.
-		
 		time_string <- "12:00 AM";
 		starting_date <- date([2017,1,1,0,0,0]);
 		
@@ -59,33 +57,25 @@ global {
 		// Top edge.
 		loop i from: 0 to: matrix_size - 1 {
 			cityMatrix cell <- cityMatrix grid_at { i , 0 };
-			cell.type <- surround ? 6 : -1;
-			cell.color <- surround ? buildingColors[6] : # black;
-			cell.density <- 0.0;
+			do initRoad(cell);
 		}
 		
 		// Bottom edge.
 		loop i from: 0 to: matrix_size - 1 {
 			cityMatrix cell <- cityMatrix grid_at { i , matrix_size - 1 };
-			cell.type <- surround ? 6 : -1;
-			cell.color <- surround ? buildingColors[6] : # black;
-			cell.density <- 0.0;
+			do initRoad(cell);
 		}
 		 
 		// Left edge.
 		loop i from: 0 to: matrix_size - 1 {
 			cityMatrix cell <- cityMatrix grid_at { 0 , i };
-			cell.type <- surround ? 6 : -1;
-			cell.color <- surround ? buildingColors[6] : # black;
-			cell.density <- 0.0;
+			do initRoad(cell);
 		}
 		
 		// Right edge.
 		loop i from: 0 to: matrix_size - 1 {
 			cityMatrix cell <- cityMatrix grid_at { matrix_size - 1 , i };
-			cell.type <- surround ? 6 : -1;
-			cell.color <- surround ? buildingColors[6] : # black;
-			cell.density <- 0.0;
+			do initRoad(cell);
 		}
         
         // Initialize job probability array.
@@ -107,6 +97,13 @@ global {
          ask pev {
         	do findNewTarget;
          }
+	}
+	
+	// Init a surrounding road cell.
+	action initRoad(cityMatrix cell) {
+		cell.type <- surround ? 6 : -1;
+		cell.color <- surround ? buildingColors[6] : # black;
+		cell.density <- 0.0;
 	}
 	
 	// Accumulate traffic on each road cell.
@@ -137,11 +134,13 @@ global {
 			hour <- "12";
 		} else if (current_date.hour < 12) {
 			hour <- string(current_date.hour);
+		} else if (current_date.hour = 12) {
+			hour <- "12";
 		} else {
 			hour <- string(current_date.hour - 12);
 		}
 		string minute <- (current_date.minute < 10 ? "0" + string(current_date.minute) : string(current_date.minute));
-		string type <- current_date.hour > 12 ? "PM" : "AM";
+		string type <- current_date.hour > 11 ? "PM" : "AM";
 		time_string <- 	hour + ":" + minute + " " + type;
 	}
 	
