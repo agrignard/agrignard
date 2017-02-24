@@ -8,9 +8,10 @@
 model tutorial_gis_city_traffic
 
 global {
-	file bound_shapefile <- file("../includes/Bounds.shp");
+	file bound_shapefile <- file("../includes/big_bounds.shp");
 	file buildings_shapefile <- file("../includes/Buildings.shp");
 	file roads_shapefile <- file("../includes/Roads.shp");
+	file amenities_shapefile <- file("../includes/amenities_large.shp");
 	geometry shape <- envelope(bound_shapefile);
 	float step <- 10 #mn;
 	int nb_people <- 100;
@@ -22,6 +23,9 @@ global {
 	float min_speed <- 0.1 #km / #h;
 	float max_speed <- 0.5 #km / #h; 
 	graph the_graph;
+	map<string,rgb> color_map<- ["arts_centre"::rgb(255,255,255), "bar"::rgb(255,0,0), "cafe"::rgb(255,125,0), 
+	"cinema"::rgb(255,255,255), "college"::rgb(0,0,225), "fast_food"::rgb(255,100,0), "hospital"::rgb(0,255,0), "library"::rgb(225,225,225), "pharmacy"::rgb(0,225,0), "place_of_workship"::rgb(0,255,255),
+	"police"::rgb(125,125,125),"post_office"::rgb(125,125,125), "pub"::rgb(255,100,0), "restaurant"::rgb(225,100,0), "school"::rgb(0,0,255), "theatre"::rgb(225,225,225), "university"::rgb(0,0,200)];
 	
 	init {
 		create building from: buildings_shapefile with: [type::string(read ("TYPE"))]{
@@ -47,23 +51,24 @@ global {
 			objective <- "resting";
 			location <- any_location_in (living_place); 
 		}
+		create amenity from: amenities_shapefile with: [type::string(read ("amenity"))];
 		
 	}
 }
 
-species building {
+species building schedules: []{
 	string type;
 	rgb color <- #gray  ;
 	
 	aspect base {
-		draw shape color: color;
+		draw shape color: #gray depth:100;
 	}
 }
 
-species road  {
+species road  schedules: []{
 	rgb color <- #red ;
 	aspect base {
-		draw shape color: #black ;
+		draw shape color: #white ;
 	}
 }
 
@@ -104,16 +109,21 @@ species people skills:[moving]{
 	}
 }
 
+species amenity schedules: []{
+	string type;
+	aspect base {
+		draw circle(20) color: color_map[type];
+	}
+}
+
 experiment road_traffic type: gui {	
 	output {
-		display city_display  type:opengl rotate:time{
-			species building aspect: base ;
+		display city_display  type:opengl background:#black{
+			species building aspect: base;
 			species road aspect: base ;
-			species people aspect: base ;	
-		}
-		
-		display city_display2  type:opengl rotate:9.74{
-			species people aspect: base trace:10 fading: true ;		
+			species people aspect: base ;
+			species amenity aspect: base ;
+				
 		}
 	}
 }
