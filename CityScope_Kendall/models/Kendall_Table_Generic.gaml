@@ -8,10 +8,10 @@
 model tutorial_gis_city_traffic
 
 global {
-	file bound_shapefile <- file("../includes/big_bounds.shp");
+	file bound_shapefile <- file("../includes/bounds.shp");
 	file buildings_shapefile <- file("../includes/Buildings.shp");
-	file roads_shapefile <- file("../includes/walkable_road.shp");
-	file amenities_shapefile <- file("../includes/amenities.shp");
+	file roads_shapefile <- file("../includes/Roads.shp");
+	file amenities_shapefile <- file("../includes/small_amenities.shp");
 	geometry shape <- envelope(bound_shapefile);
 	float step <- 10 #sec;
 	int nb_people <- 1000;
@@ -29,6 +29,12 @@ global {
 	float min_speed <- 4 #km / #h;
 	float max_speed <- 6 #km / #h; 
 	graph the_graph;
+	
+	
+	map<string,list> amenities_map_settings<- ["arts_centre"::[rgb(255,255,255),triangle(50)], "bar"::[rgb(255,0,0),square(50)], "cafe"::[rgb(255,125,0),square(50)], "cinema"::[rgb(225,225,225),triangle(50)], 
+	"fast_food"::[rgb(255,255,0),square(50)] ,"market_place"::[rgb(0,255,0),square(75)] , "music_club"::[rgb(255,105,180),hexagon(50)], "nightclub"::[rgb(255,182,193),hexagon(50)],
+	 "pub"::[rgb(255,99,71),square(50)], "restaurant"::[rgb(255,215,0),square(50)], "theatre"::[rgb(255,255,255),triangle(50)]];
+	 
 	 
 	 map<string,rgb> amenities_map<- ["arts_centre"::rgb(255,255,255), "bar"::rgb(255,0,0), "cafe"::rgb(255,125,0), "cinema"::rgb(225,225,225), 
 	"fast_food"::rgb(255,255,0) ,"market_place"::rgb(0,255,0) , "music_club"::rgb(255,105,180), "nightclub"::rgb(255,182,193),
@@ -67,7 +73,8 @@ global {
 		list<building>  industrial_buildings <- building  where (each.type="Industrial") ;
 		//FROM FILE
 		create amenity from: amenities_shapefile with: [type::string(read ("amenity"))]{
-			color <- rgb(amenities_map[type]);
+			color <- rgb(amenities_map_settings[type][0]);
+			shape <- geometry(amenities_map_settings[type][1]) at_location location;
 			category<-rnd(2);	
 		}
 		
@@ -186,8 +193,9 @@ species people skills:[moving]{
 species amenity schedules:[]{
 	string type;
 	int category;
+	rgb color;
 	aspect base {
-		draw square(100) color: category_color[category];
+		draw shape color: color;
 	}
 }
 
@@ -200,14 +208,14 @@ experiment road_traffic type: gui {
 			species road aspect: base refresh:false;
 			species people aspect: dynamic ;
 			species amenity aspect: base ;
-			graphics "text" 
+			/*graphics "text" 
 			{
                draw "CityGamatrix" color: # white font: font("Helvetica", 20, #bold) at: { -1000, 20};
                draw square(100) color:#yellow at: { -600, 200};   draw "$" color: # white font: font("Helvetica", 20, #bold) at: { -500, 250};
                draw square(100) color:#red at: { -600, 400};   draw "$$" color: # white font: font("Helvetica", 20, #bold) at: { -500, 450};
                draw square(100) color:#blue at: { -600, 600};   draw "$$$" color: # white font: font("Helvetica", 20, #bold) at: { -500, 650};
                draw string(current_hour) + "h" color: # white font: font("Helvetica", 30, #italic) at: { -500, 900};
-            }
+            }*/
            
             	  graphics "edges" {
 				//Creation of the edges of adjacence
