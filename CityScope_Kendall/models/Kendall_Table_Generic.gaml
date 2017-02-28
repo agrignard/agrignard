@@ -1,18 +1,18 @@
 /**
-* Name: Loading of GIS data (buildings and roads)
+* Name: CityScope Kendall
 * Author: Arnaud Grignard
-* Description: first part of the tutorial: Road Traffic
+* Description: An agent-based model running on the CityScope Ken
 * Tags: gis
 */
 
-model tutorial_gis_city_traffic
+model CityScope_Kendall
 
 global {
 	file bound_shapefile <- file("../includes/bounds.shp");
 	file buildings_shapefile <- file("../includes/Buildings.shp");
 	file roads_shapefile <- file("../includes/Roads.shp");
-	//file amenities_shapefile <- file("../includes/small_amenities.shp");
-	file amenities_shapefile <- file("../includes/volpe_amenities.shp");
+	file amenities_shapefile <- file("../includes/small_amenities.shp");
+	file amenities_volpe_shapefile <- file("../includes/volpe_amenities.shp");
 	geometry shape <- envelope(bound_shapefile);
 	float step <- 10 #sec;
 	int nb_people <- 500;
@@ -31,53 +31,62 @@ global {
 	float max_speed <- 6 #km / #h; 
 	graph the_graph;
 	
+	//////////// GRID //////////////
+	map<string, unknown> matrixData;
+    map<int,rgb> buildingColors <-[0::#blue, 1::#blue, 2::"yellow",3::"yellow", 4::"red", 5::"red",6::rgb(40,40,40)];
+    list<map<string, int>> legos;
+	//list<float> density_array;
 	
+		
+	//////// AMENITIES  ///////////
 	map<string,list> amenities_map_settings<- ["arts_centre"::[rgb(255,255,255),triangle(50)], "bar"::[rgb(255,0,0),square(50)], "cafe"::[rgb(255,125,0),square(50)], "cinema"::[rgb(225,225,225),triangle(50)], 
 	"fast_food"::[rgb(255,255,0),square(50)] ,"market_place"::[rgb(0,255,0),square(75)] , "music_club"::[rgb(255,105,180),hexagon(50)], "nightclub"::[rgb(255,182,193),hexagon(50)],
 	 "pub"::[rgb(255,99,71),square(50)], "restaurant"::[rgb(255,215,0),square(50)], "theatre"::[rgb(255,255,255),triangle(50)]];
-	 
-	 
-	 map<string,rgb> amenities_map<- ["arts_centre"::rgb(255,255,255), "bar"::rgb(255,0,0), "cafe"::rgb(255,125,0), "cinema"::rgb(225,225,225), 
-	"fast_food"::rgb(255,255,0) ,"market_place"::rgb(0,255,0) , "music_club"::rgb(255,105,180), "nightclub"::rgb(255,182,193),
-	 "pub"::rgb(255,99,71), "restaurant"::rgb(255,215,0), "theatre"::rgb(255,255,255)];
-	 
-	list category_color<- [rgb(255,0,0), rgb(255,255,0), rgb(0,0,255)];
+	 	 
+	list category_color<- [rgb(0,0,255), rgb(255,255,0), rgb(255,0,0)];
+	list amenity_type <-["arts_centre", "bar", "cafe", "cinema","fast_food","market_place","music_club","night_club","pub","restaurant","theatre"];
 	 
 	 
 	//INTERACTION GRAPH 
 	graph my_graph;
 	int degreeMax <- 1;
-	//Distance to know if a sphere is adjacent or not with an other
+	
+	//PARAMETERS
+	bool moveOnRoadNetwork <- false parameter: "Move on road network:" category: "Simulation";
 	int distance parameter: 'distance ' category: "Visualization" min: 1 <- 100#m;	
 	bool drawInteraction <- false parameter: "Draw Interaction:" category: "Visualization";
+	int scenario parameter: "Scenario:" category: "Experiment" min:1 max:3 <-1;
+	bool onlineGrid <-true parameter: "Online Grid:" category: "Environment";
+	bool dynamicGrid <-false parameter: "Update Grid:" category: "Environment";
+	int refresh <- 100 min: 1 max:1000 parameter: "Refresh rate (cycle):" category: "Environment";
 	
 	init {
 		create building from: buildings_shapefile with: [type::string(read ("TYPE"))]{
-			if (location.x < world.shape.width*0.4  and location.y > world.shape.height*0.6){
-				type <- "Industrial";
-				
-			}else{
-				type <- "Residential";
-				color <- #blue ;
-			}
-			if(shape.area<1000){
-				depth<-50.0;
-			}
-			else{
-				depth<-100.0;
-			}
-		}
+			type <- (location.x < world.shape.width*0.4  and location.y > world.shape.height*0.6) ? "Industrial" : "Residential";
+		}	
 		create road from: roads_shapefile ;
 		the_graph <- as_edge_graph(road);
 		
-		list<building> residential_buildings <- building where (each.type="Residential");
-		list<building>  industrial_buildings <- building  where (each.type="Industrial") ;
 		//FROM FILE
-		create amenity from: amenities_shapefile with: [type::string(read ("amenity"))]{
+		if(scenario = 1){
+	      create amenity from: amenities_shapefile with: [type::string(read ("amenity"))]{
 			color <- rgb(amenities_map_settings[type][0]);
 			shape <- geometry(amenities_map_settings[type][1]) at_location location;
 			category<-rnd(2);	
-		}	
+		  }		
+		}
+		
+		if(scenario = 2){
+	      create amenity from: amenities_volpe_shapefile with: [type::string(read ("amenity"))]{
+			color <- rgb(amenities_map_settings[type][0]);
+			shape <- geometry(amenities_map_settings[type][1]) at_location location;
+			category<-rnd(2);	
+		  }		
+		}
+		
+		if(scenario = 3){
+		  do initGrid;
+		}
 		
 		create people number: nb_people {
 			speed <- min_speed + rnd (max_speed - min_speed) ;
@@ -88,15 +97,44 @@ global {
 			time_to_dinner <- min_dinner_start + rnd (max_dinner_start - min_dinner_start) ;
 			time_to_sleep <- min_work_end + rnd (max_work_end - min_work_end) ;
 			category<-rnd(2);			
-			living_place <- one_of(residential_buildings) ;
-			working_place <- one_of(industrial_buildings) ;
+			living_place <- one_of(building where (each.type="Residential")) ;
+			working_place <- one_of(building  where (each.type="Industrial")) ;
 			eating_place <- one_of(amenity where (each.category=category and (each.type="fast_food" or each.type="restaurant" or each.type="cafe"))) ;
 			dining_place <- one_of(amenity where ((each.type="arts_centre" or each.type="theatre" or each.type="bar"))) ;
 			objective <- "resting";
-			location <- any_location_in (living_place); 
-			
-		}		
+			location <- any_location_in (living_place); 	
+		}			
 	}
+	
+	
+	
+  action initGrid{
+		if(onlineGrid = true){
+		  matrixData <- json_file("http://45.55.73.103/table/citymatrix_volpe").contents;
+	    }
+	    else{
+	      matrixData <- json_file("../includes/cityIO_Kendall.json").contents;
+	    }	
+		legos <- matrixData["grid"];
+		loop l over: legos { 
+			int id <-int(l["type"]);
+			if(id != -1 and id != -2)   {
+		      create amenity {
+				  location <- {	2800 + (13-l["x"])*world.shape.width*0.01,	2800+ l["y"]*world.shape.height*0.01};
+				  color <-buildingColors[id];
+				  shape <- square(60) at_location location;
+				  type <- one_of(amenity_type);
+				  category<-rnd(2);	
+              }				
+			}              
+        }
+	}
+	
+	reflex updateGrid when: ((cycle mod refresh) = 0) and (dynamicGrid = true){	
+		do initGrid;
+	}
+	
+	
     reflex updateDegreeMax when:(drawInteraction=true){
 		do degreeMax_computation;
 	}
@@ -118,7 +156,7 @@ species building schedules: []{
 	float depth;
 	
 	aspect base {	
-     	draw shape color: rgb(125,125,125,125);// depth:depth*shape.area*0.00005;	
+     	draw shape color: rgb(75,75,75,125);// depth:depth*shape.area*0.00005;	
 	}
 }
 
@@ -194,7 +232,12 @@ species people skills:[moving]{
 	} 
 	 
 	reflex move {//when: the_target != nil {
-		do goto target: the_target ;//on: the_graph ; 
+	    if(moveOnRoadNetwork){
+	    	  do goto target: the_target on: the_graph ; 
+	    }else{
+	      do goto target: the_target ;//on: the_graph ; 
+	    }
+		
 		if the_target = location {
 			the_target <- nil ;
 			curMovingMode <- "wandering";
@@ -224,30 +267,35 @@ species amenity schedules:[]{
 	int category;
 	rgb color;
 	aspect base {
-		draw shape color: color;
+		if(scenario = 3){
+			draw shape color: color;
+		}else{
+		  draw circle(75) empty:true color: rgb(255,255,255) border: rgb(255,255,255);
+		  draw circle(75) color: rgb(125,125,125,125);	
+		}
+		
 	}
 }
 
-experiment road_traffic type: gui {	
+experiment CityScope type: gui {	
 	//float minimum_cycle_duration <- 0.05;
 	output {
 		
-		display city_display  type:java2D background:#black{
+		display CityScope  type:java2D background:#black{
 			species building aspect: base refresh:false;
 			species road aspect: base refresh:false;
-			species people aspect: dynamic;
 			species amenity aspect: base refresh:false;
+			species people aspect: dynamic;
 			graphics "text" 
 			{
-               draw "CityGamatrix" color: # white font: font("Helvetica", 20, #bold) at: { 5000, 5000};
-               draw square(100) color:#blue at: { 5000, 5200};   draw "$" color: # white font: font("Helvetica", 20, #bold) at: { 5075, 5250};
-               draw square(100) color:#yellow at: { 5300, 5200};   draw "$$" color: # white font: font("Helvetica", 20, #bold) at: { 5375, 5250};
-               draw square(100) color:#red at: { 5600, 5200};   draw "$$$" color: # white font: font("Helvetica", 20, #bold) at: { 5675, 5250};
+               //draw square(100) color:#blue at: { 5000, 5200};   draw "$" color: # white font: font("Helvetica", 20, #bold) at: { 5075, 5250};
+               //draw square(100) color:#yellow at: { 5300, 5200};   draw "$$" color: # white font: font("Helvetica", 20, #bold) at: { 5375, 5250};
+               //draw square(100) color:#red at: { 5600, 5200};   draw "$$$" color: # white font: font("Helvetica", 20, #bold) at: { 5675, 5250};
                draw "time:" + string(current_hour) + "h" color: # white font: font("Helvetica", 20, #italic) at: { 6500, 5000};
             }
            
-            	  graphics "edges" {
-				//Creation of the edges of adjacence
+            	graphics "edges" {
+		      //Creation of the edges of adjacence
 				if (my_graph != nil  and drawInteraction = true) {
 					loop eg over: my_graph.edges {
 						geometry edge_geom <- geometry(eg);
