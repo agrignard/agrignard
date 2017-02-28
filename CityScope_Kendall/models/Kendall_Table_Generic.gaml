@@ -11,7 +11,8 @@ global {
 	file bound_shapefile <- file("../includes/bounds.shp");
 	file buildings_shapefile <- file("../includes/Buildings.shp");
 	file roads_shapefile <- file("../includes/Roads.shp");
-	file amenities_shapefile <- file("../includes/small_amenities.shp");
+	file amenities_shapefile <- file("../includes/volpe_amenities.shp");
+	file tracts_shapefile <- file("../includes/tracts.shp");
 	geometry shape <- envelope(bound_shapefile);
 	float step <- 10 #sec;
 	int nb_people <- 1000;
@@ -76,10 +77,11 @@ global {
 			color <- rgb(amenities_map_settings[type][0]);
 			shape <- geometry(amenities_map_settings[type][1]) at_location location;
 			category<-rnd(2);	
-		}
+		}	
 		
 		create people number: nb_people {
 			speed <- min_speed + rnd (max_speed - min_speed) ;
+			initialSpeed <-speed;
 			start_work <- min_work_start + rnd (max_work_start - min_work_start) ;
 			time_to_lunch <- min_lunch_start + rnd (max_lunch_start - min_lunch_start) ;
 			time_to_rework <- min_rework_start + rnd (max_rework_start - min_rework_start) ;
@@ -88,8 +90,8 @@ global {
 			category<-rnd(2);			
 			living_place <- one_of(residential_buildings) ;
 			working_place <- one_of(industrial_buildings) ;
-			eating_place <- one_of(amenity where (each.category=category and (each.type="fast_food" or each.type="restaurant"))) ;
-			dining_place <- one_of(amenity where ((each.type="arts_centre" or each.type="theatre"))) ;
+			eating_place <- one_of(amenity where (each.category=category and (each.type="fast_food" or each.type="restaurant" or each.type="cafe"))) ;
+			dining_place <- one_of(amenity where ((each.type="arts_centre" or each.type="theatre" or each.type="bar"))) ;
 			objective <- "resting";
 			location <- any_location_in (living_place); 
 			
@@ -128,7 +130,8 @@ species road  schedules: []{
 }
 
 species people skills:[moving]{
-	rgb color <- #yellow ;
+	rgb color <- #yellow ; 
+	float initialSpeed;
 	building living_place <- nil ;
 	building working_place <- nil ;
 	amenity eating_place<-nil;
@@ -139,39 +142,54 @@ species people skills:[moving]{
 	int time_to_dinner;
 	int end_work;
 	string objective ;
-	int category; 
+	string curMovingMode<-"travelling"
+;	int category; 
 	point the_target <- nil ;
 	int degree;
 	float radius;
 	
 	reflex time_to_work when: current_hour = start_work and objective = "resting"{
 		objective <- "working" ;
+		curMovingMode <- "travelling";
 		the_target <- any_location_in (working_place);
+		speed <-initialSpeed;
 	}
 	
 	reflex time_to_go_lunch when: current_hour = time_to_lunch and objective = "working"{
 		objective <- "eating" ;
+		curMovingMode <- "travelling";
 		the_target <- any_location_in (eating_place); 
+		speed <-initialSpeed;
 	} 
 	
 	reflex time_to_go_rework when: current_hour = time_to_rework and objective = "eating"{
 		objective <- "reworking" ;
-		the_target <- any_location_in (working_place); 
+		curMovingMode <- "travelling";
+		the_target <- any_location_in (working_place);
+		speed <-initialSpeed; 
 	} 
 	reflex time_to_go_dinner when: current_hour = time_to_dinner and objective = "reworking"{
 		objective <- "dinning" ;
-		the_target <- any_location_in (dining_place); 
+		curMovingMode <- "travelling";
+		the_target <- any_location_in (dining_place);
+		speed <-initialSpeed; 
 	} 
 	
 	reflex time_to_go_home when: current_hour = end_work and objective = "dinning"{
 		objective <- "resting" ;
-		the_target <- any_location_in (living_place); 
+		curMovingMode <- "travelling";
+		the_target <- any_location_in (living_place);
+		speed <-initialSpeed; 
 	} 
 	 
-	reflex move when: the_target != nil {
-		do goto target: the_target;// on: the_graph ; 
+	reflex move {//when: the_target != nil {
+		do goto target: the_target ;//on: the_graph ; 
 		if the_target = location {
 			the_target <- nil ;
+			curMovingMode <- "wandering";
+		}
+		if(curMovingMode = "wandering"){
+			do wander speed:0.5 #km / #h;
 		}
 	}
 	
@@ -186,7 +204,7 @@ species people skills:[moving]{
 	}
 	
 	aspect dynamic {
-		draw circle(25) color: category_color[category];
+		draw circle(10) color: category_color[category];
 	}
 }
 
@@ -203,8 +221,8 @@ experiment road_traffic type: gui {
 	float minimum_cycle_duration <- 0.05;
 	output {
 		
-		display city_display  type:opengl background:#black{
-			//species building aspect: base;
+		display city_display  type:java2D background:#black{
+			species building aspect: base;
 			species road aspect: base refresh:false;
 			species people aspect: dynamic ;
 			species amenity aspect: base ;
