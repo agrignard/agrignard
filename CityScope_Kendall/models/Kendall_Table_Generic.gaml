@@ -11,11 +11,11 @@ global {
 	file bound_shapefile <- file("../includes/bounds.shp");
 	file buildings_shapefile <- file("../includes/Buildings.shp");
 	file roads_shapefile <- file("../includes/Roads.shp");
+	//file amenities_shapefile <- file("../includes/small_amenities.shp");
 	file amenities_shapefile <- file("../includes/volpe_amenities.shp");
-	file tracts_shapefile <- file("../includes/tracts.shp");
 	geometry shape <- envelope(bound_shapefile);
 	float step <- 10 #sec;
-	int nb_people <- 1000;
+	int nb_people <- 500;
 	int current_hour update: (time / #hour) mod 24;
 	int min_work_start <- 6;
 	int max_work_start <- 10;
@@ -48,7 +48,7 @@ global {
 	graph my_graph;
 	int degreeMax <- 1;
 	//Distance to know if a sphere is adjacent or not with an other
-	int distance parameter: 'distance ' min: 1 <- 10#m;	
+	int distance parameter: 'distance ' category: "Visualization" min: 1 <- 100#m;	
 	bool drawInteraction <- false parameter: "Draw Interaction:" category: "Visualization";
 	
 	init {
@@ -82,11 +82,11 @@ global {
 		create people number: nb_people {
 			speed <- min_speed + rnd (max_speed - min_speed) ;
 			initialSpeed <-speed;
-			start_work <- min_work_start + rnd (max_work_start - min_work_start) ;
+			time_to_work <- min_work_start + rnd (max_work_start - min_work_start) ;
 			time_to_lunch <- min_lunch_start + rnd (max_lunch_start - min_lunch_start) ;
 			time_to_rework <- min_rework_start + rnd (max_rework_start - min_rework_start) ;
 			time_to_dinner <- min_dinner_start + rnd (max_dinner_start - min_dinner_start) ;
-			end_work <- min_work_end + rnd (max_work_end - min_work_end) ;
+			time_to_sleep <- min_work_end + rnd (max_work_end - min_work_end) ;
 			category<-rnd(2);			
 			living_place <- one_of(residential_buildings) ;
 			working_place <- one_of(industrial_buildings) ;
@@ -118,7 +118,7 @@ species building schedules: []{
 	float depth;
 	
 	aspect base {	
-     	draw shape color: rgb(125,125,125,125) depth:depth*shape.area*0.00005;	
+     	draw shape color: rgb(125,125,125,125);// depth:depth*shape.area*0.00005;	
 	}
 }
 
@@ -136,50 +136,61 @@ species people skills:[moving]{
 	building working_place <- nil ;
 	amenity eating_place<-nil;
 	amenity dining_place<-nil;
-	int start_work ;
+	int time_to_work ;
 	int time_to_lunch;
 	int time_to_rework;
 	int time_to_dinner;
-	int end_work;
+	int time_to_sleep;
 	string objective ;
-	string curMovingMode<-"travelling"
-;	int category; 
+	string curMovingMode<-"travelling";	
+	int category; 
 	point the_target <- nil ;
 	int degree;
 	float radius;
 	
-	reflex time_to_work when: current_hour = start_work and objective = "resting"{
-		objective <- "working" ;
-		curMovingMode <- "travelling";
-		the_target <- any_location_in (working_place);
-		speed <-initialSpeed;
+	reflex time_to_work when: current_hour > time_to_work and current_hour < time_to_lunch  and objective = "resting"{
+		if(flip(0.01)){
+			objective <- "working" ;
+			curMovingMode <- "travelling";
+			the_target <- any_location_in (working_place);
+			speed <-initialSpeed;	
+		}
+		
 	}
 	
-	reflex time_to_go_lunch when: current_hour = time_to_lunch and objective = "working"{
-		objective <- "eating" ;
-		curMovingMode <- "travelling";
-		the_target <- any_location_in (eating_place); 
-		speed <-initialSpeed;
+	reflex time_to_go_lunch when: current_hour > time_to_lunch and current_hour < time_to_rework and objective = "working"{
+		if(flip(0.01)){
+			objective <- "eating" ;
+			curMovingMode <- "travelling";
+			the_target <- any_location_in (eating_place); 
+			speed <-initialSpeed;
+		}
 	} 
 	
-	reflex time_to_go_rework when: current_hour = time_to_rework and objective = "eating"{
-		objective <- "reworking" ;
-		curMovingMode <- "travelling";
-		the_target <- any_location_in (working_place);
-		speed <-initialSpeed; 
+	reflex time_to_go_rework when: current_hour > time_to_rework and current_hour < time_to_dinner  and objective = "eating"{
+		if(flip(0.01)){
+			objective <- "reworking" ;
+			curMovingMode <- "travelling";
+			the_target <- any_location_in (working_place);
+			speed <-initialSpeed;
+		} 
 	} 
-	reflex time_to_go_dinner when: current_hour = time_to_dinner and objective = "reworking"{
-		objective <- "dinning" ;
-		curMovingMode <- "travelling";
-		the_target <- any_location_in (dining_place);
-		speed <-initialSpeed; 
+	reflex time_to_go_dinner when: current_hour > time_to_dinner and current_hour < time_to_sleep  and objective = "reworking"{
+		if(flip(0.01)){
+			objective <- "dinning" ;
+			curMovingMode <- "travelling";
+			the_target <- any_location_in (dining_place);
+			speed <-initialSpeed; 
+		}
 	} 
 	
-	reflex time_to_go_home when: current_hour = end_work and objective = "dinning"{
-		objective <- "resting" ;
-		curMovingMode <- "travelling";
-		the_target <- any_location_in (living_place);
-		speed <-initialSpeed; 
+	reflex time_to_go_home when: current_hour > time_to_sleep and current_hour < 24 and objective = "dinning"{
+		if(flip(0.01)){
+			objective <- "resting" ;
+			curMovingMode <- "travelling";
+			the_target <- any_location_in (living_place);
+			speed <-initialSpeed; 
+		}
 	} 
 	 
 	reflex move {//when: the_target != nil {
@@ -218,22 +229,22 @@ species amenity schedules:[]{
 }
 
 experiment road_traffic type: gui {	
-	float minimum_cycle_duration <- 0.05;
+	//float minimum_cycle_duration <- 0.05;
 	output {
 		
 		display city_display  type:java2D background:#black{
-			species building aspect: base;
+			species building aspect: base refresh:false;
 			species road aspect: base refresh:false;
-			species people aspect: dynamic ;
-			species amenity aspect: base ;
-			/*graphics "text" 
+			species people aspect: dynamic;
+			species amenity aspect: base refresh:false;
+			graphics "text" 
 			{
-               draw "CityGamatrix" color: # white font: font("Helvetica", 20, #bold) at: { -1000, 20};
-               draw square(100) color:#yellow at: { -600, 200};   draw "$" color: # white font: font("Helvetica", 20, #bold) at: { -500, 250};
-               draw square(100) color:#red at: { -600, 400};   draw "$$" color: # white font: font("Helvetica", 20, #bold) at: { -500, 450};
-               draw square(100) color:#blue at: { -600, 600};   draw "$$$" color: # white font: font("Helvetica", 20, #bold) at: { -500, 650};
-               draw string(current_hour) + "h" color: # white font: font("Helvetica", 30, #italic) at: { -500, 900};
-            }*/
+               draw "CityGamatrix" color: # white font: font("Helvetica", 20, #bold) at: { 5000, 5000};
+               draw square(100) color:#blue at: { 5000, 5200};   draw "$" color: # white font: font("Helvetica", 20, #bold) at: { 5075, 5250};
+               draw square(100) color:#yellow at: { 5300, 5200};   draw "$$" color: # white font: font("Helvetica", 20, #bold) at: { 5375, 5250};
+               draw square(100) color:#red at: { 5600, 5200};   draw "$$$" color: # white font: font("Helvetica", 20, #bold) at: { 5675, 5250};
+               draw "time:" + string(current_hour) + "h" color: # white font: font("Helvetica", 20, #italic) at: { 6500, 5000};
+            }
            
             	  graphics "edges" {
 				//Creation of the edges of adjacence
@@ -242,7 +253,6 @@ experiment road_traffic type: gui {
 						geometry edge_geom <- geometry(eg);
 						float val <- 255 * edge_geom.perimeter / distance; 
 						draw line(edge_geom.points)  color: rgb(val,val,val);
-						write "draw lines";
 					}
 				}	
 			}	
