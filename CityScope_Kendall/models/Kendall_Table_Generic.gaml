@@ -52,7 +52,7 @@ global {
 	int degreeMax <- 1;
 	
 	//PARAMETERS
-	bool moveOnRoadNetwork <- false parameter: "Move on road network:" category: "Simulation";
+	bool moveOnRoadNetwork <- true parameter: "Move on road network:" category: "Simulation";
 	int distance parameter: 'distance ' category: "Visualization" min: 1 <- 100#m;	
 	bool drawInteraction <- false parameter: "Draw Interaction:" category: "Visualization";
 	int scenario parameter: "Scenario:" category: "Experiment" min:1 max:3 <-1;
@@ -187,48 +187,48 @@ species people skills:[moving]{
 	float radius;
 	
 	reflex time_to_work when: current_hour > time_to_work and current_hour < time_to_lunch  and objective = "resting"{
-		if(flip(0.01)){
+		//if(flip(0.1)){
 			objective <- "working" ;
 			curMovingMode <- "travelling";
 			the_target <- any_location_in (working_place);
 			speed <-initialSpeed;	
-		}
+		//}
 		
 	}
 	
 	reflex time_to_go_lunch when: current_hour > time_to_lunch and current_hour < time_to_rework and objective = "working"{
-		if(flip(0.01)){
+		//if(flip(0.1)){
 			objective <- "eating" ;
 			curMovingMode <- "travelling";
 			the_target <- any_location_in (eating_place); 
 			speed <-initialSpeed;
-		}
+		//}
 	} 
 	
 	reflex time_to_go_rework when: current_hour > time_to_rework and current_hour < time_to_dinner  and objective = "eating"{
-		if(flip(0.01)){
+		//if(flip(0.1)){
 			objective <- "reworking" ;
 			curMovingMode <- "travelling";
 			the_target <- any_location_in (working_place);
 			speed <-initialSpeed;
-		} 
+		//} 
 	} 
 	reflex time_to_go_dinner when: current_hour > time_to_dinner and current_hour < time_to_sleep  and objective = "reworking"{
-		if(flip(0.01)){
+		//if(flip(0.1)){
 			objective <- "dinning" ;
 			curMovingMode <- "travelling";
 			the_target <- any_location_in (dining_place);
 			speed <-initialSpeed; 
-		}
+		//}
 	} 
 	
-	reflex time_to_go_home when: current_hour > time_to_sleep and current_hour < 24 and objective = "dinning"{
-		if(flip(0.01)){
+	reflex time_to_go_home when: current_hour > time_to_sleep and (current_hour < 24) and objective = "dinning"{
+		//if(flip(0.1)){
 			objective <- "resting" ;
 			curMovingMode <- "travelling";
 			the_target <- any_location_in (living_place);
 			speed <-initialSpeed; 
-		}
+		//}
 	} 
 	 
 	reflex move {//when: the_target != nil {
@@ -238,9 +238,12 @@ species people skills:[moving]{
 	      do goto target: the_target ;//on: the_graph ; 
 	    }
 		
-		if the_target = location {
+		if (the_target = location) {
 			the_target <- nil ;
-			curMovingMode <- "wandering";
+			if(objective = "eating" or objective = "dinning"){
+				//curMovingMode <- "wandering";
+			}
+			
 		}
 		if(curMovingMode = "wandering"){
 			do wander speed:0.5 #km / #h;
@@ -258,7 +261,7 @@ species people skills:[moving]{
 	}
 	
 	aspect dynamic {
-		draw circle(10) color: category_color[category];
+		draw circle(14) color: category_color[category];
 	}
 }
 
@@ -270,8 +273,8 @@ species amenity schedules:[]{
 		if(scenario = 3){
 			draw shape color: color;
 		}else{
-		  draw circle(75) empty:true color: rgb(255,255,255) border: rgb(255,255,255);
-		  draw circle(75) color: rgb(125,125,125,125);	
+		  draw circle(50) empty:true color: rgb(125,125,125) border: rgb(125,125,125);
+		  draw circle(50) color: rgb(75,75,75,125);	
 		}
 		
 	}
@@ -281,9 +284,9 @@ experiment CityScope type: gui {
 	//float minimum_cycle_duration <- 0.05;
 	output {
 		
-		display CityScope  type:java2D background:#black{
+		display CityScope  type:java2D background:#black keystone:true{
 			species building aspect: base refresh:false;
-			species road aspect: base refresh:false;
+			//species road aspect: base refresh:false;
 			species amenity aspect: base refresh:false;
 			species people aspect: dynamic;
 			graphics "text" 
@@ -296,11 +299,11 @@ experiment CityScope type: gui {
            
             	graphics "edges" {
 		      //Creation of the edges of adjacence
-				if (my_graph != nil  and drawInteraction = true) {
+				if (my_graph != nil  and drawInteraction = true ) {
 					loop eg over: my_graph.edges {
 						geometry edge_geom <- geometry(eg);
 						float val <- 255 * edge_geom.perimeter / distance; 
-						draw line(edge_geom.points)  color: rgb(val,val,val);
+						draw line(edge_geom.points)  color: rgb(175,175,175);
 					}
 				}	
 			}	
