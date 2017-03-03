@@ -26,7 +26,7 @@ global {
 	int min_dinner_start <- 18;
 	int max_dinner_start <- 20;
 	int min_work_end <- 21; 
-	int max_work_end <- 23; 
+	int max_work_end <- 22; 
 	float min_speed <- 4 #km / #h;
 	float max_speed <- 6 #km / #h; 
 	graph the_graph;
@@ -35,7 +35,7 @@ global {
 	map<string, unknown> matrixData;
     map<int,rgb> buildingColors <-[0::#blue, 1::#blue, 2::"yellow",3::"yellow", 4::"red", 5::"red",6::rgb(40,40,40)];
     list<map<string, int>> legos;
-	//list<float> density_array;
+	list<float> density_array;
 	
 		
 	//////// AMENITIES  ///////////
@@ -55,7 +55,7 @@ global {
 	bool moveOnRoadNetwork <- true parameter: "Move on road network:" category: "Simulation";
 	int distance parameter: 'distance ' category: "Visualization" min: 1 <- 100#m;	
 	bool drawInteraction <- false parameter: "Draw Interaction:" category: "Visualization";
-	int scenario parameter: "Scenario:" category: "Experiment" min:1 max:3 <-1;
+	int scenario <-3 parameter: "Scenario:" category: "Experiment" min:1 max:3 ;
 	bool onlineGrid <-true parameter: "Online Grid:" category: "Environment";
 	bool dynamicGrid <-false parameter: "Update Grid:" category: "Environment";
 	int refresh <- 100 min: 1 max:1000 parameter: "Refresh rate (cycle):" category: "Environment";
@@ -116,15 +116,37 @@ global {
 	      matrixData <- json_file("../includes/cityIO_Kendall.json").contents;
 	    }	
 		legos <- matrixData["grid"];
+		density_array <- matrixData["objects"]["density"];
+		write density_array;
 		loop l over: legos { 
 			int id <-int(l["type"]);
+			
 			if(id != -1 and id != -2)   {
 		      create amenity {
 				  location <- {	2800 + (13-l["x"])*world.shape.width*0.01,	2800+ l["y"]*world.shape.height*0.01};
-				  color <-buildingColors[id];
+				  //color <-buildingColors[id];
 				  shape <- square(60) at_location location;
 				  type <- one_of(amenity_type);
-				  category<-rnd(2);	
+				 // 
+				  //LARGE
+				  if(id=0 or id =3){
+				  	category <-0;
+				  	color<-#red;
+				  	density <-density_array[id];
+				  }
+				  //MEDIUM
+				  if(id=1 or id =4){
+				  	category <-1;
+				  	color<-#yellow;
+				  	density <-density_array[id];
+				  }
+				  
+				  if(id=2 or id =5){
+				  	category <-2;
+				  	color<-#blue;
+				  	density <-density_array[id];
+				  }
+				 	
               }				
 			}              
         }
@@ -268,10 +290,13 @@ species people skills:[moving]{
 species amenity schedules:[]{
 	string type;
 	int category;
+	float density <-0.0;
 	rgb color;
 	aspect base {
 		if(scenario = 3){
-			draw shape color: color;
+			//draw shape color: color depth:density*10;
+			draw circle(50) empty:true color: rgb(125,125,125) border: rgb(125,125,125);
+		    draw circle(50) color: rgb(75,75,75,125);	
 		}else{
 		  draw circle(50) empty:true color: rgb(125,125,125) border: rgb(125,125,125);
 		  draw circle(50) color: rgb(75,75,75,125);	
@@ -284,10 +309,10 @@ experiment CityScope type: gui {
 	//float minimum_cycle_duration <- 0.05;
 	output {
 		
-		display CityScope  type:java2D background:#black keystone:true{
+		display CityScope  type:opengl background:#black keystone:true{
 			species building aspect: base refresh:false;
 			//species road aspect: base refresh:false;
-			species amenity aspect: base refresh:false;
+			species amenity aspect: base transparency:0.7;
 			species people aspect: dynamic;
 			graphics "text" 
 			{
