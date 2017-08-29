@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Maps>
+  <Campus objectVersion="13" name="System Campus">
+    <Dimension length="99999.0" width="99999.0" height="99999.0" offsetX="0.0" offsetY="0.0" unit="FEET"/>
+    <Building objectVersion="132" name="Nexus">
+      <Dimension length="984.25" width="984.25" height="32.15" offsetX="0.0" offsetY="0.0" unit="FEET"/>
+      <Floor objectVersion="2" name="PSS" isOutdoor="false" floorNumber="1" floorRefId="-4564316828414770989">
+        <Dimension length="600.39" width="196.85" height="32.15" offsetX="0.0" offsetY="0.0" unit="FEET"/>
+        <Image imageName="domain_0_1490020195437.jpg"/>
+        <GPSMarker name="Nexus_PSS_Oest">
+          <GeoCoordinate latitude="42.497522" longitude="1.500691" unit="DEGREES"/>
+          <MapCoordinate x="22.97" y="33.46" unit="FEET"/>
+        </GPSMarker>
+        <GPSMarker name="Nexus_PSS_Est">
+          <GeoCoordinate latitude="42.497616" longitude="1.501288" unit="DEGREES"/>
+          <MapCoordinate x="193.57" y="33.46" unit="FEET"/>
+        </GPSMarker>
+        <GPSMarker name="Nexus_PSS_Sud">
+          <GeoCoordinate latitude="42.497206" longitude="1.50116" unit="DEGREES"/>
+          <MapCoordinate x="116.8" y="186.35" unit="FEET"/>
+        </GPSMarker>
+        <LocationFilterRegion regionType="OUTSIDE">
+          <MapCoordinate x="0.0" y="0.0" unit="FEET"/>
+          <MapCoordinate x="196.85" y="0.0" unit="FEET"/>
+          <MapCoordinate x="196.85" y="600.39" unit="FEET"/>
+          <MapCoordinate x="0.0" y="600.39" unit="FEET"/>
+        </LocationFilterRegion>
+      </Floor>
+      <Floor objectVersion="94" name="Tercera" isOutdoor="false" floorNumber="3" floorRefId="-4564316828414770988">
+        <Dimension length="278.87" width="164.04" height="9.84" offsetX="0.0" offsetY="0.0" unit="FEET"/>
+        <Image imageName="domain_0_1490020196721.jpg"/>
+        <GPSMarker name="Nexus_Tercera_Oest">
+          <GeoCoordinate latitude="42.49754" longitude="1.500752" unit="DEGREES"/>
+          <MapCoordinate x="0.98" y="57.41" unit="FEET"/>
+        </GPSMarker>
+        <GPSMarker name="Nexus_Tercera_Sud">
+          <GeoCoordinate latitude="42.497364" longitude="1.501244" unit="DEGREES"/>
+          <MapCoordinate x="111.88" y="104.33" unit="FEET"/>
+        </GPSMarker>
+        <GPSMarker name="Nexus_Tercera_Nord">
+          <GeoCoordinate latitude="42.497616" longitude="1.501288" unit="DEGREES"/>
+          <MapCoordinate x="148.29" y="15.42" unit="FEET"/>
+        </GPSMarker>
+        <AccessPoint name="C001-AP3602-NEXP3_0001" radioMacAddress="88:75:56:1e:0c:60" ethMacAddress="30:f7:0d:f6:d4:cd" ipAddress="10.34.253.107" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="81.1" y="76.6" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="1" txPowerLevel="1" antennaPattern="AIR-ANT2524DB-R-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="12"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="52" txPowerLevel="1" antennaPattern="AIR-ANT2524DB-R-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+        </AccessPoint>
+        <LocationFilterRegion regionType="OUTSIDE">
+          <MapCoordinate x="0.0" y="0.0" unit="FEET"/>
+          <MapCoordinate x="164.04" y="0.0" unit="FEET"/>
+          <MapCoordinate x="164.04" y="278.87" unit="FEET"/>
+          <MapCoordinate x="0.0" y="278.87" unit="FEET"/>
+        </LocationFilterRegion>
+      </Floor>
+      <Floor objectVersion="2" name="Segona" isOutdoor="false" floorNumber="2" floorRefId="-4564316828414770987">
+        <Dimension length="278.87" width="164.04" height="32.15" offsetX="0.0" offsetY="0.0" unit="FEET"/>
+        <Image imageName="domain_0_1490020198072.png"/>
+        <GPSMarker name="Nexus_Segona_Sud">
+          <GeoCoordinate latitude="42.497364" longitude="1.501244" unit="DEGREES"/>
+          <MapCoordinate x="122.7" y="94.49" unit="FEET"/>
+        </GPSMarker>
+        <GPSMarker name="Nexus_Segona_Nord">
+          <GeoCoordinate latitude="42.497616" longitude="1.501288" unit="DEGREES"/>
+          <MapCoordinate x="162.73" y="0.98" unit="FEET"/>
+        </GPSMarker>
+        <GPSMarker name="Nexus_Segona_Oest">
+          <GeoCoordinate latitude="42.49754" longitude="1.500752" unit="DEGREES"/>
+          <MapCoordinate x="0.98" y="44.95" unit="FEET"/>
+        </GPSMarker>
+        <LocationFilterRegion regionType="OUTSIDE">
+          <MapCoordinate x="0.0" y="0.0" unit="FEET"/>
+          <MapCoordinate x="164.04" y="0.0" unit="FEET"/>
+          <MapCoordinate x="164.04" y="278.87" unit="FEET"/>
+          <MapCoordinate x="0.0" y="278.87" unit="FEET"/>
+        </LocationFilterRegion>
+      </Floor>
+    </Building>
+  </Campus>
+  <Campus objectVersion="2" name="Unassigned">
+    <Dimension length="99999.0" width="99999.0" height="99999.0" offsetX="0.0" offsetY="0.0" unit="FEET"/>
+  </Campus>
+  <Campus objectVersion="39" name="WiFi Public - Andorra Telecom">
+    <Dimension length="16404.2" width="16404.2" height="321.84" offsetX="0.0" offsetY="0.0" unit="FEET"/>
+    <Building objectVersion="140" name="Escaldes Engordany">
+      <Dimension length="2341.77" width="3030.47" height="321.84" offsetX="2264.11" offsetY="21.33" unit="FEET"/>
+      <Floor objectVersion="140" name="Escaldes Engordany" isOutdoor="true" floorNumber="1" floorRefId="-4564316828414770992">
+        <Dimension length="2341.77" width="3030.47" height="321.84" offsetX="2264.11" offsetY="21.33" unit="FEET"/>
+        <Image imageName="domain_5_1490020172566.jpg"/>
+        <GPSMarker name="SantAntoni_Carlemany">
+          <GeoCoordinate latitude="42.508526" longitude="1.535469" unit="DEGREES"/>
+          <MapCoordinate x="398.6" y="1204.0" unit="FEET"/>
+        </GPSMarker>
+        <GPSMarker name="PareEnricGraner_Carlemany">
+          <GeoCoordinate latitude="42.508646" longitude="1.53872" unit="DEGREES"/>
+          <MapCoordinate x="1275.0" y="1170.0" unit="FEET"/>
+        </GPSMarker>
+        <GPSMarker name="Safarejos_Carlemany">
+          <GeoCoordinate latitude="42.509231" longitude="1.54439" unit="DEGREES"/>
+          <MapCoordinate x="2819.0" y="980.0" unit="FEET"/>
+        </GPSMarker>
+        <AccessPoint name="ES99-AP1552-FA014_0105" radioMacAddress="04:da:d2:1f:19:80" ethMacAddress="04:da:d2:1f:19:9c" ipAddress="10.34.84.32" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="475.16" y="1199.89" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="11" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="132" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="ES99-AP1552-FA036_0105" radioMacAddress="dc:a5:f4:b9:64:60" ethMacAddress="dc:a5:f4:b9:64:7c" ipAddress="10.34.84.34" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="1212.25" y="1170.75" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="6" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="112" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="ES99-AP1552-FA004_0105" radioMacAddress="04:da:d2:1e:c4:60" ethMacAddress="04:da:d2:1e:c4:7c" ipAddress="10.34.84.31" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="146.01" y="1228.75" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="11" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="132" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="ES99-AP1552-FA050_0105" radioMacAddress="68:86:a7:29:44:20" ethMacAddress="68:86:a7:29:44:3c" ipAddress="10.34.84.37" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="1652.96" y="1185.88" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="11" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="100" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="ES99-AP1552-FA070_0105" radioMacAddress="dc:a5:f4:04:30:20" ethMacAddress="dc:a5:f4:04:30:3c" ipAddress="10.34.84.44" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="2304.58" y="1113.05" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="6" txPowerLevel="3" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="132" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="ES99-AP1552-CS002_47C5" radioMacAddress="dc:a5:f4:04:34:20" ethMacAddress="dc:a5:f4:04:34:3c" ipAddress="10.34.84.45" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="2686.15" y="990.46" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="11" txPowerLevel="1" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="100" txPowerLevel="4" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="ES99-AP1552-FA040_0105" radioMacAddress="68:86:a7:29:77:80" ethMacAddress="68:86:a7:29:77:9c" ipAddress="10.34.84.35" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="1329.33" y="1173.68" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="11" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="100" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="ES99-AP1552-CA001_0105" radioMacAddress="68:86:a7:29:7f:80" ethMacAddress="68:86:a7:29:7f:9c" ipAddress="10.34.84.39" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="1800.54" y="1154.42" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="1" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="112" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="ES99-AP1552-PA001_0105" radioMacAddress="dc:a5:f4:05:ef:80" ethMacAddress="dc:a5:f4:05:ef:9c" ipAddress="10.34.84.43" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="1466.91" y="1150.31" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="1" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="100" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="ES99-AP1552-CA002_0105" radioMacAddress="dc:a5:f4:b9:5f:60" ethMacAddress="dc:a5:f4:b9:5f:7c" ipAddress="10.34.84.40" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="1041.26" y="1168.26" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="11" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="132" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="ES99-AP1552-FA062_0105" radioMacAddress="68:86:a7:29:6b:c0" ethMacAddress="68:86:a7:29:6b:dc" ipAddress="10.34.84.38" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="2053.85" y="1144.62" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="6" txPowerLevel="4" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="132" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="ES99-AP1552-FA037_0105" radioMacAddress="68:86:a7:28:ec:e0" ethMacAddress="68:86:a7:28:ec:fc" ipAddress="10.34.84.36" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="931.03" y="1113.07" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="6" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="132" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="ES99-AP1552-CA004_0105" radioMacAddress="dc:a5:f4:b9:63:a0" ethMacAddress="dc:a5:f4:b9:63:bc" ipAddress="10.34.84.42" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="351.18" y="1186.19" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="1" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="100" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="ES99-AP1552-CA003_0105" radioMacAddress="dc:a5:f4:b9:61:20" ethMacAddress="dc:a5:f4:b9:61:3c" ipAddress="10.34.84.41" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="643.41" y="1182.02" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="6" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="100" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <LocationFilterRegion regionType="OUTSIDE">
+          <MapCoordinate x="0.0" y="0.0" unit="FEET"/>
+          <MapCoordinate x="3030.47" y="0.0" unit="FEET"/>
+          <MapCoordinate x="3030.47" y="2341.77" unit="FEET"/>
+          <MapCoordinate x="0.0" y="2341.77" unit="FEET"/>
+        </LocationFilterRegion>
+      </Floor>
+    </Building>
+    <Building objectVersion="140" name="Andorra La Vella">
+      <Dimension length="4795.43" width="3783.48" height="321.84" offsetX="0.0" offsetY="0.0" unit="FEET"/>
+      <Floor objectVersion="140" name="Andorra La Vella" isOutdoor="true" floorNumber="1" floorRefId="-4564316828414770991">
+        <Dimension length="4795.43" width="3783.48" height="321.84" offsetX="0.0" offsetY="0.0" unit="FEET"/>
+        <Image imageName="domain_5_1490020184435.jpg"/>
+        <GPSMarker name="Bisbe_Meritxell">
+          <GeoCoordinate latitude="42.508324" longitude="1.52593" unit="DEGREES"/>
+          <MapCoordinate x="1614.0" y="1939.0" unit="FEET"/>
+        </GPSMarker>
+        <GPSMarker name="RosellCalva_Meritxell">
+          <GeoCoordinate latitude="42.508364" longitude="1.53184" unit="DEGREES"/>
+          <MapCoordinate x="3153.0" y="1969.0" unit="FEET"/>
+        </GPSMarker>
+        <GPSMarker name="Nequi_Benlloch">
+          <GeoCoordinate latitude="42.507545" longitude="1.520441" unit="DEGREES"/>
+          <MapCoordinate x="96.8" y="2446.0" unit="FEET"/>
+        </GPSMarker>
+        <AccessPoint name="AN99-AP1552-FA037_0017" radioMacAddress="04:da:d2:1e:f9:e0" ethMacAddress="04:da:d2:1e:f9:fc" ipAddress="10.34.84.16" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="1286.48" y="2232.51" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="1" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="100" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-FAN08_0024" radioMacAddress="04:da:d2:1f:13:e0" ethMacAddress="04:da:d2:1f:13:fc" ipAddress="10.34.84.29" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="736.97" y="2339.37" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="11" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="132" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-FA031_0024" radioMacAddress="dc:a5:f4:04:4e:20" ethMacAddress="dc:a5:f4:04:4e:20" ipAddress="10.34.84.24" numOfSlots="2" apMode="BRIDGE">
+          <MapCoordinate x="90.51" y="2509.31" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="6" txPowerLevel="4" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="2" channelNumber="100" txPowerLevel="1" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-FA063_0017" radioMacAddress="dc:a5:f4:04:25:80" ethMacAddress="dc:a5:f4:04:25:9c" ipAddress="10.34.84.19" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="1764.17" y="1914.83" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="1" txPowerLevel="4" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="100" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-FA045_0017" radioMacAddress="dc:a5:f4:04:4d:60" ethMacAddress="dc:a5:f4:04:4d:7c" ipAddress="10.34.84.23" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="2355.72" y="1544.01" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="11" txPowerLevel="2" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="108" txPowerLevel="2" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-FA049_0024" radioMacAddress="dc:a5:f4:04:4f:60" ethMacAddress="dc:a5:f4:04:4f:7c" ipAddress="10.34.84.27" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="419.29" y="2521.57" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="1" txPowerLevel="4" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="100" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-FA077_0017" radioMacAddress="dc:a5:f4:04:34:c0" ethMacAddress="dc:a5:f4:04:34:dc" ipAddress="10.34.84.17" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="1419.04" y="2076.59" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="6" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="132" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-FA087_0003" radioMacAddress="dc:a5:f4:04:4e:c0" ethMacAddress="dc:a5:f4:04:4e:dc" ipAddress="10.34.84.8" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="3093.86" y="1998.92" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="1" txPowerLevel="4" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="132" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-FA041_0017" radioMacAddress="dc:a5:f4:04:54:c0" ethMacAddress="dc:a5:f4:04:54:dc" ipAddress="10.34.84.15" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="1181.37" y="2296.16" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="1" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="108" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-FA081_0003" radioMacAddress="dc:a5:f4:04:18:80" ethMacAddress="dc:a5:f4:04:18:9c" ipAddress="10.34.84.9" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="3245.69" y="1972.06" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="6" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="100" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-FA057_0024" radioMacAddress="dc:a5:f4:04:27:00" ethMacAddress="dc:a5:f4:04:27:1c" ipAddress="10.34.84.28" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="571.12" y="2457.92" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="11" txPowerLevel="4" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="108" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-FA027_0017" radioMacAddress="dc:a5:f4:04:31:00" ethMacAddress="dc:a5:f4:04:31:1c" ipAddress="10.34.84.18" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="1597.15" y="2019.36" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="1" txPowerLevel="4" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="108" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-FA056_0017" radioMacAddress="dc:a5:f4:04:54:80" ethMacAddress="dc:a5:f4:04:54:9c" ipAddress="10.34.84.21" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="2065.49" y="1828.99" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="6" txPowerLevel="4" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="108" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-FA041_0003" radioMacAddress="dc:a5:f4:04:2a:60" ethMacAddress="dc:a5:f4:04:2a:7c" ipAddress="10.34.84.10" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="3413.87" y="1998.92" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="1" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="132" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-FA007_0017" radioMacAddress="dc:a5:f4:04:44:60" ethMacAddress="dc:a5:f4:04:44:7c" ipAddress="10.34.84.22" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="2213.24" y="1709.86" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="6" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="100" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-FA017_0003" radioMacAddress="dc:a5:f4:04:4d:e0" ethMacAddress="dc:a5:f4:04:4d:fc" ipAddress="10.34.84.7" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="2955.46" y="2066.66" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="6" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="100" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-FA017_0017" radioMacAddress="ec:e1:a9:31:ab:00" ethMacAddress="ec:e1:a9:31:ab:1c" ipAddress="10.34.84.20" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="1952.79" y="1959.79" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="11" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="132" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-CS001_2415" radioMacAddress="dc:a5:f4:04:33:c0" ethMacAddress="dc:a5:f4:04:33:dc" ipAddress="10.34.84.30" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="2443.87" y="1734.48" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="11" txPowerLevel="3" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="132" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-FA045_0024" radioMacAddress="dc:a5:f4:04:37:c0" ethMacAddress="dc:a5:f4:04:37:c0" ipAddress="10.34.84.26" numOfSlots="2" apMode="BRIDGE">
+          <MapCoordinate x="356.22" y="2487.12" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="2" channelNumber="13" txPowerLevel="1" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="2" channelNumber="100" txPowerLevel="1" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-FA061_0003" radioMacAddress="dc:a5:f4:04:4e:40" ethMacAddress="dc:a5:f4:04:4e:5c" ipAddress="10.34.84.12" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="3697.1" y="1886.21" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="6" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="100" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-FA007_0003" radioMacAddress="ec:e1:a9:31:8d:20" ethMacAddress="ec:e1:a9:31:8d:3c" ipAddress="10.34.84.5" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="2676.91" y="1929.43" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="1" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="132" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-FA097_0017" radioMacAddress="dc:a5:f4:04:48:a0" ethMacAddress="dc:a5:f4:04:48:bc" ipAddress="10.34.84.13" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="909.24" y="2304.34" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="6" txPowerLevel="4" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="100" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-FA039_0024" radioMacAddress="dc:a5:f4:b9:65:40" ethMacAddress="dc:a5:f4:b9:65:40" ipAddress="10.34.84.25" numOfSlots="2" apMode="BRIDGE">
+          <MapCoordinate x="245.85" y="2499.38" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="2" channelNumber="13" txPowerLevel="2" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="2" channelNumber="100" txPowerLevel="1" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <AccessPoint name="AN99-AP1552-FA065_0003" radioMacAddress="ec:e1:a9:31:8b:40" ethMacAddress="ec:e1:a9:31:8b:5c" ipAddress="10.34.84.11" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="3565.71" y="1910.74" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="1" txPowerLevel="4" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="112" txPowerLevel="5" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="14"/>
+        </AccessPoint>
+        <LocationFilterRegion regionType="OUTSIDE">
+          <MapCoordinate x="0.0" y="0.0" unit="FEET"/>
+          <MapCoordinate x="3783.48" y="0.0" unit="FEET"/>
+          <MapCoordinate x="3783.48" y="4795.43" unit="FEET"/>
+          <MapCoordinate x="0.0" y="4795.43" unit="FEET"/>
+        </LocationFilterRegion>
+      </Floor>
+    </Building>
+    <Building objectVersion="38" name="Pal">
+      <Dimension length="16404.2" width="16404.2" height="10.0" offsetX="0.0" offsetY="0.0" unit="FEET"/>
+      <Floor objectVersion="38" name="Pal" isOutdoor="true" floorNumber="1" floorRefId="-4564316841299530532">
+        <Dimension length="16404.2" width="16404.2" height="10.0" offsetX="0.0" offsetY="0.0" unit="FEET"/>
+        <AccessPoint name="AP1ce8.5d81.ee5c" radioMacAddress="e0:d1:73:ae:b1:c0" ethMacAddress="1c:e8:5d:81:ee:5c" ipAddress="10.34.254.74" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="-1.0" y="-1.0" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="1" txPowerLevel="1" antennaPattern="Internal-702-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="0"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="36" txPowerLevel="1" antennaPattern="Internal-702-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="0"/>
+        </AccessPoint>
+        <AccessPoint name="LM01-CAP702I-Pal-Int-Buffet-02" radioMacAddress="d4:2c:44:83:99:60" ethMacAddress="d4:2c:44:82:36:b0" ipAddress="10.34.254.77" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="-1.0" y="-1.0" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="11" txPowerLevel="1" antennaPattern="Internal-702-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="0"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="64" txPowerLevel="1" antennaPattern="Internal-702-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="0"/>
+        </AccessPoint>
+        <AccessPoint name="APd42c.4482.35a6" radioMacAddress="d4:2c:44:83:88:c0" ethMacAddress="d4:2c:44:82:35:a6" ipAddress="10.34.254.76" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="-1.0" y="-1.0" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="1" txPowerLevel="1" antennaPattern="Internal-702-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="0"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="36" txPowerLevel="1" antennaPattern="Internal-702-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="0"/>
+        </AccessPoint>
+        <AccessPoint name="AP_Comisaris_Pal" radioMacAddress="d4:2c:44:83:9e:80" ethMacAddress="d4:2c:44:82:37:02" ipAddress="10.34.254.82" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="-1.0" y="-1.0" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="6" txPowerLevel="1" antennaPattern="Internal-702-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="0"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="36" txPowerLevel="1" antennaPattern="Internal-702-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="0"/>
+        </AccessPoint>
+        <AccessPoint name="Ap4_Telecabina_PAL" radioMacAddress="e0:89:9d:fe:6f:60" ethMacAddress="e0:89:9d:fe:6f:7c" ipAddress="10.34.254.147" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="-1.0" y="-1.0" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="1" txPowerLevel="1" antennaPattern="AIR-ANT2547V-N-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="0"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="104" txPowerLevel="1" antennaPattern="AIR-ANT2547V-N-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="0"/>
+        </AccessPoint>
+        <AccessPoint name="LN01-AP1562E-Pal-Ext-Buffet-02" radioMacAddress="08:96:ad:e2:df:60" ethMacAddress="00:62:ec:4a:a7:6e" ipAddress="10.34.254.78" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="-1.0" y="-1.0" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="6" txPowerLevel="1" antennaPattern="AIR-ANT2450V-N" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="104" txPowerLevel="1" antennaPattern="AIR-ANT5180V-N" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+        </AccessPoint>
+        <AccessPoint name="LM01-AP1562E-Pal-Ext-Terrasa-03" radioMacAddress="2c:33:11:92:46:c0" ethMacAddress="00:62:ec:80:8d:14" ipAddress="10.34.253.162" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="-1.0" y="-1.0" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="11" txPowerLevel="1" antennaPattern="AIR-ANT2450V-N" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="132" txPowerLevel="1" antennaPattern="AIR-ANT5180V-N" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+        </AccessPoint>
+        <AccessPoint name="AP1_parking_pal" radioMacAddress="08:96:ad:e3:1d:60" ethMacAddress="00:62:ec:4a:ab:4e" ipAddress="10.34.253.178" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="-1.0" y="-1.0" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="11" txPowerLevel="1" antennaPattern="AIR-ANT2450V-N" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="108" txPowerLevel="1" antennaPattern="AIR-ANT5180V-N" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+        </AccessPoint>
+        <AccessPoint name="AP3_parking_pal" radioMacAddress="34:db:fd:d5:f2:c0" ethMacAddress="88:5a:92:6a:a3:37" ipAddress="10.34.253.180" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="-1.0" y="-1.0" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="1" txPowerLevel="1" antennaPattern="AIR-ANT2524DB-R-2.4GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="0"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="36" txPowerLevel="1" antennaPattern="AIR-ANT2524DB-R-5GHz" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="0"/>
+        </AccessPoint>
+        <AccessPoint name="AP2_parking_pal" radioMacAddress="08:96:ad:e3:34:e0" ethMacAddress="00:62:ec:80:82:c6" ipAddress="10.34.253.179" numOfSlots="2" apMode="LOCAL">
+          <MapCoordinate x="-1.0" y="-1.0" unit="FEET"/>
+          <ApInterface band="IEEE_802_11_B" slotNumber="0" channelAssignment="1" channelNumber="6" txPowerLevel="1" antennaPattern="AIR-ANT2450V-N" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+          <ApInterface band="IEEE_802_11_A" slotNumber="1" channelAssignment="1" channelNumber="132" txPowerLevel="1" antennaPattern="AIR-ANT5180V-N" antennaAngle="1.57" antennaElevAngle="0.0" antennaGain="8"/>
+        </AccessPoint>
+      </Floor>
+    </Building>
+  </Campus>
+</Maps>
