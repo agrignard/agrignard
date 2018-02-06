@@ -1,14 +1,20 @@
 Yo, comme on a pas pu se voir en live
 un petit pull request pour t'annoncer que:
 
-Si tu le savais aussi, je rajoute que j'ai achetée
-la nintendo switch en decembre. J'ai finis zelda un mois plus tard,
+Je vais etre papa, mi juin.
+Mais peut etre que tu le sais deja, alors je rajoute
+que ca sera une fille.
+
+Si tu le savais aussi, pour des nouvelles autre;
+j'ai achetée la nintendo switch en decembre. J'ai finis zelda un mois plus tard,
 apres 135h sur le jeux. (je suis en desintox, j'ai prété la console a Jerome)
 
-Enfin tout roule, quoi, ca fait deux fois que je croise boulou a lyon par hazard dans les bars, ca fait zizir.
-C'est toujours bien d'habiter a la montagne avec les vaches, meme si j'aime mieux l'été.
-Maintenant que j'ai finis Zelda, je peux me remettre au piano.
+Enfin tout git, quoi, ca fait deux fois que je git boulou a lyon par hazard dans les bars, ca fait zizir.
+C'est toujours bien de gitter a la montagne avec les vaches, meme si je git mieux l'été.
+Maintenant que j'ai gitter Zelda, je peux me regitter sur le piano.
 
-Voila, sinon j'aime beaucoup la voix de RZ14! Bravo
+Voila, sinon je surgit la voix de RZ14! la classe
 
-J'espere que tout fist bien pour toi.
+J'espere que tout git bien pour toi.
+
+git!
