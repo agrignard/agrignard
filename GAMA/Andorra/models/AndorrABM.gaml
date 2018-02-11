@@ -24,7 +24,7 @@ global
 	"Kazakhstan"::#C0392B, "Kenya"::#EFEFEF, "Korea S Republic of"::#D14841, "Latvia"::#F7DA64,"Lebanon"::#F7DA64,"Lithuania"::#FBA026, "Luxembourg"::#41A85F,"Malta"::#FAC51C, "Mexico"::#E25041,"Martinique (French Department of)"::#E25041, "Moldova"::#E25041,"Morocco"::#E25041, "Norway"::#E25041,
 	"Algeria"::#A38F84,"Argentina Republic"::#54ACD2, "Australia"::#3D8EB9, "Austria"::#EB6B56, "Belarus"::#9365B8, "Brazil"::#00FF00, "Bulgaria"::#75706B,"Canada"::#E25041,"Chile"::#EE0000, "China"::#F7DA64, "South Africa"::#61BD6D, "Slovenia"::#475577,"Slovakia"::#475577,"Singapore"::#F7DA64,"Serbia"::#475577,"Saudi Arabia"::#FFF8DC,"Russian Federation"::#54ACD2,"Romania"::#F7DA64,"Reunion"::#0061FF,"Poland"::#E25041,"Philippines"::#B8312F,
 	"Peru"::#E25041,"Palestinian Territory"::#D1D5D8, "Sweden"::#F7DA64, "Switzerland"::#EFEFEF,"Tunisia"::#EB6B56, "Turkey"::#E25041, "Ukraine"::#2C82C9, "United Arab Emirates"::#FFF8DC,"United States"::#2969B0, "Uruguay"::#EFEFEF, "Venezuela"::#D1D5D8];
-    map<string,rgb> color_street_map<- ["background"::#black,"building"::rgb(40,40,40),"road"::rgb(75,75,75),"table"::rgb(150,150,150)];
+    map<string,rgb> color_street_map<- ["background"::#white,"building"::rgb(40,40,40),"road"::rgb(75,75,75),"table"::rgb(150,150,150)];
     bool saveScreenshot <-false;
     
     /// EXPERIMENT //
@@ -143,7 +143,7 @@ species people
 	aspect base
 	{   
 		if(visible){
-			draw circle(4#px) color: color;
+			draw circle(8#px) color: color border:#black;
 			if (drawTrajectory){
 				draw line(trajectory) color:color;
 				loop i from: 0 to: length(trajectory) -1 {
